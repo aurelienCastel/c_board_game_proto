@@ -51,9 +51,9 @@ int main()
 	
 	printf("Power of the first item: %d, power of the second item: %d.\n",
 		   	player_1.item_1.power, player_1.item_2.power);
-	printf("Power of the first item (from item_1): %d, power of the first item (from item_2): %d.\n",
+	printf("Power of the first item (from item_1): %d,\n power of the first item (from item_2): %d.\n",
 		   	player_1.item_1.owner->item_1.power, player_1.item_2.owner->item_1.power);
-	printf("Power of the second item (from item_1): %d, power of the second item (from item_2): %d.\n",
+	printf("Power of the second item (from item_1): %d,\n power of the second item (from item_2): %d.\n",
 		   	player_1.item_1.owner->item_2.power, player_1.item_2.owner->item_2.power);
 
 	return 0;
