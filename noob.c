@@ -63,7 +63,5 @@ int main()
 
 	free(&i);
 
-	printf("%d\n", i);
-
 	return 0;
 }
