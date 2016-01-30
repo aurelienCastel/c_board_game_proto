@@ -2,10 +2,9 @@
 
 int main(void)
 {
-	
-	int i = 2;
+	char* i = "eeee";
 
-	free(&i);
+	free(i);
 
 	return 0;
 }

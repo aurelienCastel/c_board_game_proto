@@ -11,18 +11,19 @@ struct token_type
 };
 typedef struct token_type token_type;
 
-token_type new_token_type(char* name);
-token_type new_token_type(char* name)
+token_type* new_token_type(char* name);
+token_type* new_token_type(char* name)
 {
-	token_type a_token_type;
-	a_token_type.name = malloc((string_length(name) + 1) * sizeof(*name));
-	a_token_type.name = string_copy(name);
+	token_type* a_token_type = malloc(sizeof *a_token_type);
+
+	a_token_type->name = malloc((string_length(name) + 1) * sizeof *name);
+	a_token_type->name = string_copy(name);
 
 	return a_token_type;
 }
 
-int delete_token_type(token_type a_token_type);
-int delete_token_type(token_type a_token_type)
+int delete_token_type(token_type* a_token_type);
+int delete_token_type(token_type* a_token_type)
 {
 	// Test HERE if a_token.name is NULL.
 	// Test HERE if a_token.name have not been allocated with malloc.  
