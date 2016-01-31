@@ -2,7 +2,7 @@
 
 mkdir build
 pushd build
-cl -Zi c:/fun/main.c
+cl -W4 c:/fun/main.c
 popd
 
 

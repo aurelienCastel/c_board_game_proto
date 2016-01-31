@@ -2,5 +2,5 @@
 
 mkdir noob_build
 pushd noob_build
-cl -Zi c:/fun/noob.c
+cl -W4 c:/fun/noob.c
 popd

@@ -1,10 +1,17 @@
+#include<stdio.h>
 #include<stdlib.h>
 
-int main(void)
+struct item
 {
-	char* i = "eeee";
+	int b;
+	char c;
+};
 
-	free(i);
-
+char main(void)
+{  
+	struct item an_item = {.b = 1};
+	printf("%d\n", an_item.b);
+	an_item.c = 'a';
+	printf("%d, %c\n", an_item.b, an_item.c);
 	return 0;
 }
