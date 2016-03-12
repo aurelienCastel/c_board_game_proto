@@ -3,11 +3,6 @@
 
 #include <stdint.h>
 
-// I don't think this structure need to be stored on the heap, there is nothing to free in it.
-// There it doesn't need to returns a pointer.
-
-// There isn't even a need for a creator function, the struct can be initialized with {.a = ..., .c = ...}.
-// So there is no need to delete it or something.
 struct cell
 {
 	uint8_t is_hole;
