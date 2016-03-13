@@ -39,16 +39,16 @@ to be made during a board creation with the init_board function.
 #####`void init_board(struct board* board, char* name, uint8_t row_nb, char* model[])`:
 
 Initialize a board structure with the values given as parameters.
-The _model_ parameter is an array of string that is a rough visual representation of the board.
+The `model` parameter is an array of string that is a rough visual representation of the board.
 Prerequisite:
-* _board_ must be an unitialized board structure
+* `board` must be an unitialized board structure
 * the name of the board must be unique among all boards
-* _name_ must be less than 256 character long
-* _row\_nb_ must be equal to the number of string in _model_
-* _model_ must have less than 256 strings
-* strings in _model_ must be less than 256 characters long
+* `name` must be less than 256 character long
+* `row_nb` must be equal to the number of string in `model`
+* `model` must have less than 256 strings
+* strings in `model` must be less than 256 characters long
 
-* _model_ looks like this: 
+* `model` looks like this: 
 
 ```
 (char*[]){"* ***",
@@ -56,11 +56,11 @@ Prerequisite:
 		  "**"}
 ```
 
-strings of _model_ only contains spaces and * characters, * represent a cell,
+strings of `model` only contains spaces and * characters, * represent a cell,
 a space represent a cell that is a hole.
 Depending on who you want to align rows you may want to puts holes at the beginning of the strings.
 You should however never put holes at the end of the string, the last character of any string must be a *.
-The _model_ above will create this grid:
+The `model` above will create this grid:
 
 ```
 	----    ------------
@@ -72,18 +72,18 @@ The _model_ above will create this grid:
 	--------
 ```
 
-**Once you finished using the board initialized by this function, use the delete_board function on it.**
+*Once you finished using the board initialized by this function, use the `delete_board` function on it.*
 
 ---
 #####`void delete_board(struct board board)`:
 
-Free memory taken by the malloc-ed properties of _board_
+Free memory taken by the `malloc-ed` properties of `board`
 Prerequisite:
-* _board_ need to be an initialized board structure
+* `board` need to be an initialized board structure
 
 ---
 #####`void print_board(struct board* board)`:
 
 Display the board on the console.
 Prerequisite:
-* _board_ need to be an initialized board structure
+* `board` need to be an initialized board structure
