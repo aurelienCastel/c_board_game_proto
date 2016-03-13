@@ -36,7 +36,7 @@ The row_info and cell structures shouldn't be created by themselves, the are sup
 to be made during a board creation with the init_board function.
 
 ---
-####void init_board(struct board* board, char* name, uint8_t row_nb, char* model[]):
+`####void init_board(struct board* board, char* name, uint8_t row_nb, char* model[])`:
 Initialize a board structure with the values given as parameters.
 The _model_ parameter is an array of string that is a rough visual representation of the board.
 Prerequisite:
