@@ -1,7 +1,7 @@
 #**Board**
 
 ---
-```c
+```
 struct cell
 {
 	uint8_t is_hole;
