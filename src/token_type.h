@@ -4,7 +4,7 @@
 struct token_type
 {
 	char* name;
-	char representation;
+	char symbol;
 };
 
 #endif

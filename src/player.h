@@ -5,6 +5,7 @@
 
 #include "token.h"
 #include "hero.h"
+#include "console_color.h"
 
 struct player
 {
@@ -12,18 +13,18 @@ struct player
 	uint8_t is_ai;
 	uint8_t number;
 	uint8_t team;
-	char* color; // This should be a pointer to a real color like rgb.
+	color color;
 	struct hero* hero;
 	struct token token;
 	struct token special_token;
 	uint8_t special_token_amount;
-	uint8_t special_skill_aviable;
+	uint8_t is_special_skill_available;
 	uint8_t points;
 };
 
-void init_player(struct player* a_player, char* name, uint8_t is_ai, uint8_t number, uint8_t team, char* color,
-				struct hero* hero_played);
+void init_player(struct player* player, char* name, uint8_t is_ai,
+				 uint8_t team, color color, struct hero* hero);
 
-void delete_player(struct player a_player);
+void delete_player(struct player player);
 
 #endif

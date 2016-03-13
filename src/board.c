@@ -19,9 +19,11 @@ uint8_t is_border(struct board* board, uint8_t y, uint8_t x)
 	return 0;
 }
 
-void init_board(struct board* board, uint8_t row_nb, char* model[])
+void init_board(struct board* board, char* name, uint8_t row_nb, char* model[])
 {
 	uint8_t x, y;
+
+	board->name = string_copy(name, string_length(name));
 
 	board->row_nb = row_nb;
 
@@ -68,6 +70,7 @@ void delete_board(struct board board)
 {
 	uint8_t y;
 
+	free(board.name);
 	free(board.row_info);
 	for(y = 0; y < board.row_nb; y++)
 		free(board.grid[y]);
@@ -109,7 +112,7 @@ void print_board(struct board* board)
 			}
 			else
 			{
-				cc_fprintf(CC_BG_DARK_YELLOW, stdout, "   ");
+				cc_fprintf(BG_DARK_YELLOW, stdout, "   ");
 				printf("|");
 			}
 		}

@@ -2,45 +2,45 @@
 #define console_color_h
 #include <stdio.h>
 
-#define CC_COLOR_BITS 5
+#define COLOR_BITS 5
 
 typedef enum {
-    CC_FG_NONE         = 0  << 0,
-    CC_FG_BLACK        = 1  << 0,
-    CC_FG_DARK_RED     = 2  << 0,
-    CC_FG_DARK_GREEN   = 3  << 0,
-    CC_FG_DARK_YELLOW  = 4  << 0,
-    CC_FG_DARK_BLUE    = 5  << 0,
-    CC_FG_DARK_MAGENTA = 6  << 0,
-    CC_FG_DARK_CYAN    = 7  << 0,
-    CC_FG_GRAY         = 8  << 0,
-    CC_FG_DARK_GRAY    = 9  << 0,
-    CC_FG_RED          = 10 << 0,
-    CC_FG_GREEN        = 11 << 0,
-    CC_FG_YELLOW       = 12 << 0,
-    CC_FG_BLUE         = 13 << 0,
-    CC_FG_MAGENTA      = 14 << 0,
-    CC_FG_CYAN         = 15 << 0,
-    CC_FG_WHITE        = 16 << 0,
+    FG_NONE         = 0  << 0,
+    FG_BLACK        = 1  << 0,
+    FG_DARK_RED     = 2  << 0,
+    FG_DARK_GREEN   = 3  << 0,
+    FG_DARK_YELLOW  = 4  << 0,
+    FG_DARK_BLUE    = 5  << 0,
+    FG_DARK_MAGENTA = 6  << 0,
+    FG_DARK_CYAN    = 7  << 0,
+    FG_GRAY         = 8  << 0,
+    FG_DARK_GRAY    = 9  << 0,
+    FG_RED          = 10 << 0,
+    FG_GREEN        = 11 << 0,
+    FG_YELLOW       = 12 << 0,
+    FG_BLUE         = 13 << 0,
+    FG_MAGENTA      = 14 << 0,
+    FG_CYAN         = 15 << 0,
+    FG_WHITE        = 16 << 0,
 
-    CC_BG_NONE         = 0  << CC_COLOR_BITS,
-    CC_BG_BLACK        = 1  << CC_COLOR_BITS,
-    CC_BG_DARK_RED     = 2  << CC_COLOR_BITS,
-    CC_BG_DARK_GREEN   = 3  << CC_COLOR_BITS,
-    CC_BG_DARK_YELLOW  = 4  << CC_COLOR_BITS,
-    CC_BG_DARK_BLUE    = 5  << CC_COLOR_BITS,
-    CC_BG_DARK_MAGENTA = 6  << CC_COLOR_BITS,
-    CC_BG_DARK_CYAN    = 7  << CC_COLOR_BITS,
-    CC_BG_GRAY         = 8  << CC_COLOR_BITS,
-    CC_BG_DARK_GRAY    = 9  << CC_COLOR_BITS,
-    CC_BG_RED          = 10 << CC_COLOR_BITS,
-    CC_BG_GREEN        = 11 << CC_COLOR_BITS,
-    CC_BG_YELLOW       = 12 << CC_COLOR_BITS,
-    CC_BG_BLUE         = 13 << CC_COLOR_BITS,
-    CC_BG_MAGENTA      = 14 << CC_COLOR_BITS,
-    CC_BG_CYAN         = 15 << CC_COLOR_BITS,
-    CC_BG_WHITE        = 16 << CC_COLOR_BITS
-} cc_color_t;
+    BG_NONE         = 0  << COLOR_BITS,
+    BG_BLACK        = 1  << COLOR_BITS,
+    BG_DARK_RED     = 2  << COLOR_BITS,
+    BG_DARK_GREEN   = 3  << COLOR_BITS,
+    BG_DARK_YELLOW  = 4  << COLOR_BITS,
+    BG_DARK_BLUE    = 5  << COLOR_BITS,
+    BG_DARK_MAGENTA = 6  << COLOR_BITS,
+    BG_DARK_CYAN    = 7  << COLOR_BITS,
+    BG_GRAY         = 8  << COLOR_BITS,
+    BG_DARK_GRAY    = 9  << COLOR_BITS,
+    BG_RED          = 10 << COLOR_BITS,
+    BG_GREEN        = 11 << COLOR_BITS,
+    BG_YELLOW       = 12 << COLOR_BITS,
+    BG_BLUE         = 13 << COLOR_BITS,
+    BG_MAGENTA      = 14 << COLOR_BITS,
+    BG_CYAN         = 15 << COLOR_BITS,
+    BG_WHITE        = 16 << COLOR_BITS
+} color;
 
 #ifndef COMMON_LVB_LEADING_BYTE
 #define COMMON_LVB_LEADING_BYTE    0x0100
@@ -71,7 +71,7 @@ typedef enum {
 #endif
 
 /**
- * @param color {console_color_t} Console color. We can pass (FG | BG) as color.
+ * @param color {color} Console color. We can pass (FG | BG) as color.
  * @param stream {FILE*} `stdout` or `stderr`. Others will be passed to fprintf
  * without colors.
  * @param format {const char*} Format string fprintf will take.
@@ -80,6 +80,6 @@ typedef enum {
  * CAUTION(Yusuke Suzuki): bright FG & dark BG combination doesn't works
  * correctly on some terminals, but this is an well-known issue.
  */
-int cc_fprintf(cc_color_t color, FILE* stream, const char* format, ...);
+int cc_fprintf(color color, FILE* stream, const char* format, ...);
 
 #endif  /* console_color_h */

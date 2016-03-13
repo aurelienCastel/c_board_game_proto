@@ -5,6 +5,4 @@
 
 extern struct hero Yacine;
 
-//void init_all_heroes();
-
 #endif

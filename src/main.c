@@ -9,14 +9,15 @@
 int main(void)
 {
 	struct board board;
-	init_board(&board, 8, (char*[]){"*  *****",
-								    "  ****",
-								    "* ** **",
-								    "*  *** * *",
-								    "  **** **",
-									"*** * * *",
-									"    ***",
-									"   **"});
+	init_board(&board, "test", 8,
+			(char*[]){"*  *****",
+					  "  ****",
+				      "* ** **",
+					  "*  *** * *",
+					  "  **** **",
+					  "*** * * *",
+					  "    ***",
+					  "   **"});
 
 	printf("(row_nb) %d\n", board.row_nb);
 

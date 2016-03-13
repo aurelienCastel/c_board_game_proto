@@ -124,7 +124,7 @@ static void UnixTerminalRestore(FILE* stream) {
 }
 #endif  /* _WIN32 */
 
-int cc_fprintf(cc_color_t color, FILE* stream, const char* format, ...) {
+int cc_fprintf(color color, FILE* stream, const char* format, ...) {
     unsigned int fg;
     unsigned int bg;
     int result = -EINVAL;
@@ -140,8 +140,8 @@ int cc_fprintf(cc_color_t color, FILE* stream, const char* format, ...) {
         goto finish;
     }
 
-    fg = color & ((1 << CC_COLOR_BITS) - 1);
-    bg = (color >> CC_COLOR_BITS) & ((1 << CC_COLOR_BITS) - 1);
+    fg = color & ((1 << COLOR_BITS) - 1);
+    bg = (color >> COLOR_BITS) & ((1 << COLOR_BITS) - 1);
 
 #ifdef _WIN32
     console = GetStdHandle(
