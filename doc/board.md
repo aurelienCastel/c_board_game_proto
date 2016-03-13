@@ -1,6 +1,7 @@
 #**Board**
 
 ---
+```c
 struct cell
 {
 	uint8_t is_hole;
@@ -21,6 +22,7 @@ struct board
 	uint8_t row_nb;
 	struct row_info* row_info;
 };
+```
 
 ---
 The data structure board represent a board on which players can play.
