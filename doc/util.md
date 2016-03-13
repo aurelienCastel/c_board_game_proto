@@ -1,28 +1,33 @@
 # **Util**
 
 ---
-####uint8_t string_length(char* _string_) : 
-Returns the number of characters in _string_, the final '\0' character is not counted.
+
+#####`uint8_t string_length(char* string)`: 
+
+Returns the number of characters in `string`, the final '\0' character is not counted.
 The number returned is a positive integer between 0 and 255 (both included).
 Prerequisite: 
-* _string_ must be less than 256 character long
-* _string_ must be null terminated
+* `string` must be less than 256 character long
+* `string` must be null terminated
 
 ---
-####char* string_copy(char* _string_, uint8_t _length_):
-Returns a copy of the string _string_, the string returned is allocated with the malloc function.
+
+#####`char* string_copy(char* string, uint8_t length)`:
+
+Returns a copy of the string `string`, the string returned is allocated with the `malloc` function.
 Prerequisite:
-* _string_ must be less than 256 character long
-* _string_ must be null terminated
-* _length_ must be the number of character in _string_, the final '\0' character musn't   be counted
-**Once you finished using the string returned by this function, use the free function on it.**
+* `string` must be less than 256 character long
+* `string` must be null terminated
+* `length` must be the number of character in _string_, the final '\0' character musn't   be counted
+*Once you finished using the string returned by this function, use the `free` function on it.*
 
 ---
-####uint8_t are_string_equal(char* _string_, char* _string\_2_):
-Returns 1 if _string_ and  _string\_2_ are made with the same characters, otherwise it returns 0.
+#####`uint8_t are_string_equal(char* string, char* string_2)`:
+
+Returns 1 if `string` and  `string_2` are made with the same characters, otherwise it returns 0.
 Prerequisite:
-* _string_ and _string\_2_ must be less than 256 character long
-* _string_ and _string\_2_ must be null terminated
+* `string` and `string_2` must be less than 256 character long
+* `string` and `string_2` must be null terminated
 
 
 
