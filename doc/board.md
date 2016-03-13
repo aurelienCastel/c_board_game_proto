@@ -36,8 +36,10 @@ The row_info and cell structures shouldn't be created by themselves, the are sup
 to be made during a board creation with the init_board function.
 
 ---
-#### `void init_board(struct board* board, char* name,
-					 uint8_t row_nb, char* model[])`:
+```
+void init_board(struct board* board, char* name,
+			    uint8_t row_nb, char* model[])
+```:
 Initialize a board structure with the values given as parameters.
 The _model_ parameter is an array of string that is a rough visual representation of the board.
 Prerequisite:
@@ -48,9 +50,12 @@ Prerequisite:
 * _model_ must have less than 256 strings
 * strings in _model_ must be less than 256 characters long
 
-* _model_ looks like this: ```(char*[]){"* ***",
-									 " **",
-									 "**"}```
+* _model_ looks like this: 
+```
+(char*[]){"* ***",
+		  " **",
+		  "**"}
+```
 strings of _model_ only contains spaces and * characters, * represent a cell,
 a space represent a cell that is a hole.
 Depending on who you want to align rows you may want to puts holes at the beginning of the strings.
