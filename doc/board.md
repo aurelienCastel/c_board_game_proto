@@ -36,7 +36,6 @@ The row_info and cell structures shouldn't be created by themselves, the are sup
 to be made during a board creation with the init_board function.
 
 ---
-
 #####`void init_board(struct board* board, char* name, uint8_t row_nb, char* model[])`:
 
 Initialize a board structure with the values given as parameters.
@@ -62,6 +61,8 @@ a space represent a cell that is a hole.
 Depending on who you want to align rows you may want to puts holes at the beginning of the strings.
 You should however never put holes at the end of the string, the last character of any string must be a *.
 The _model_ above will create this grid:
+
+```
 	----    ------------
 	|   |   |   |   |   |
 	--------------------
@@ -69,17 +70,20 @@ The _model_ above will create this grid:
 	------------
 	|   |   |
 	--------
+```
 
 **Once you finished using the board initialized by this function, use the delete_board function on it.**
 
 ---
-####void delete_board(struct board board):
+#####`void delete_board(struct board board)`:
+
 Free memory taken by the malloc-ed properties of _board_
 Prerequisite:
 * _board_ need to be an initialized board structure
 
 ---
-####void print_board(struct board* board):
+#####`void print_board(struct board* board)`:
+
 Display the board on the console.
 Prerequisite:
 * _board_ need to be an initialized board structure
