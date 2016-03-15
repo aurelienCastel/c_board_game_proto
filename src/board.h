@@ -24,7 +24,15 @@ struct board
 	struct row_info* row_info;
 };
 
-void init_board(struct board* board, char* name, uint8_t row_nb, char* model[]);
+struct board_model
+{
+	char* name;
+	uint8_t row_nb;
+	char** model;
+};
+
+
+void init_board(struct board* board, struct board_model* model);
 void delete_board(struct board board);
 
 void print_board(struct board* board);

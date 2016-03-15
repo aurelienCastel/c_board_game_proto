@@ -1,8 +1,10 @@
+#include "util.h"
+
 #include<stdlib.h>
 #include<stddef.h>
-#include <stdint.h>
+#include <stdio.h>
 
-#include "util.h"
+#define LONGEST_INPUT 255
 
 uint8_t string_length(char* string)
 {
@@ -36,4 +38,16 @@ uint8_t are_string_equal(char* string, char* string_2)
 	}
 
 	return 0;
+}
+
+void store_input(char* storage)
+{
+	uint8_t i;
+
+	for(i = 0; (storage[i] = getchar()) != '\n' && i < LONGEST_INPUT; i++);
+
+	if(storage[i] != '\n')
+		while(getchar() != '\n');
+
+	storage[i] = '\0';
 }

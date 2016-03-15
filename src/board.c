@@ -1,10 +1,9 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
-#include<stdint.h>
 
-#include "console_color.h"
 #include "board.h"
+#include "console_color.h"
 #include "util.h"
 
 uint8_t is_border(struct board* board, uint8_t y, uint8_t x)
@@ -19,42 +18,42 @@ uint8_t is_border(struct board* board, uint8_t y, uint8_t x)
 	return 0;
 }
 
-void init_board(struct board* board, char* name, uint8_t row_nb, char* model[])
+void init_board(struct board* board, struct board_model* model)
 {
 	uint8_t x, y;
 
-	board->name = string_copy(name, string_length(name));
+	board->name = string_copy(model->name, string_length(model->name));
 
-	board->row_nb = row_nb;
+	board->row_nb = model->row_nb;
 
-	board->grid = malloc(row_nb * sizeof *(board->grid));
-	board->row_info = malloc(row_nb * sizeof *(board->row_info));
+	board->grid = malloc(board->row_nb * sizeof *(board->grid));
+	board->row_info = malloc(board->row_nb * sizeof *(board->row_info));
 
-	for(y = 0; y < row_nb; y++)
+	for(y = 0; y < board->row_nb; y++)
 	{
-		board->grid[y] = malloc(string_length(model[y]) * sizeof **(board->grid));
+		board->grid[y] = malloc(string_length(model->model[y]) * sizeof **(board->grid));
 		board->row_info[y].limit_left = 0;
 		board->row_info[y].limit_right = 0;
 
-		for(x = 0; model[y][x] == ' '; x++)
+		for(x = 0; model->model[y][x] == ' '; x++)
 			board->row_info[y].limit_left++;
 		board->row_info[y].limit_right = board->row_info[y].limit_left - 1;
 
-		for(; model[y][x] != '\0'; x++)
+		for(; model->model[y][x] != '\0'; x++)
 		{
-			if(model[y][x] == '*')
+			if(model->model[y][x] == '*')
 			{
 				board->grid[y][x].token = NULL;
 				board->grid[y][x].is_hole = 0;
 			}
-			else if(model[y][x] == ' ')
+			else if(model->model[y][x] == ' ')
 				board->grid[y][x].is_hole = 1;
 
 			board->row_info[y].limit_right++;
 		}
 	}
 
-	for(y = 0; y < row_nb; y++)
+	for(y = 0; y < board->row_nb; y++)
 	{
 		for(x = board->row_info[y].limit_left;
 				x <= board->row_info[y].limit_right; x++)

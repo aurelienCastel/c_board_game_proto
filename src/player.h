@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#include "token.h"
 #include "hero.h"
+#include "token.h"
 #include "console_color.h"
 
 struct player
