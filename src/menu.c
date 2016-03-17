@@ -63,65 +63,65 @@ void standard_game_menu()
 
 void pvp_menu()
 {
-	char* player_name = "";
-	char* player_hero = "";
-	char* ai_hero = "";
-	char* time = "";
-	char* board = "";
-
-	printf("Enter your name:");
-	store_input(player_name);
-
-	while(1)
-	{
-		// Add a print with all playable heroes.
-		printf("Enter the name of the hero you want to play:");
-		store_input(player_hero);
-
-		if()
-			break;
-		else
-			printf("Please type a valid choice and press enter.\n");
-
-	}
-
-	while(1)
-	{
-		// Add a print with all playable heroes.
-		printf("Enter the name of your oponent's hero:");
-		store_input(ai_hero);
-
-		if()
-			break;
-		else
-			printf("Please type a valid choice and press enter.\n");
-	}
-
-	while(1)
-	{
-		printf("1 - Short time | 5 points\t 2 - Medium time | 5 points\t 3 - Long time | 5 points\n"
-			   "4 - Short time | 7 points\t 5 - Medium time | 7 points\t 6 - Long time | 7 points\n"
-			   "7 - Short time | 9 points\t 8 - Medium time | 9 points\t 9 - Long time | 9 points\n"
-			   "Enter your choice:");
-		store_input(time);
-
-		if(time[0] >= '1' && time[0] <= 9)
-			break;
-	}
-
-	while(1)
-	{
-		// Add a print with all playable boards 
-		printf("Enter the name of the board you want to play on:");
-		store_input(board);
-
-		if()
-			break;
-		else
-			printf("Please type a valid choice and press enter.\n");
-	}
-
-	// Lauch a game with all collected data.
+//	char* player_name = "";
+//	char* player_hero = "";
+//	char* ai_hero = "";
+//	char* time = "";
+//	char* board = "";
+//
+//	printf("Enter your name:");
+//	store_input(player_name);
+//
+//	while(1)
+//	{
+//		// Add a print with all playable heroes.
+//		printf("Enter the name of the hero you want to play:");
+//		store_input(player_hero);
+//
+//		if()
+//			break;
+//		else
+//			printf("Please type a valid choice and press enter.\n");
+//
+//	}
+//
+//	while(1)
+//	{
+//		// Add a print with all playable heroes.
+//		printf("Enter the name of your oponent's hero:");
+//		store_input(ai_hero);
+//
+//		if()
+//			break;
+//		else
+//			printf("Please type a valid choice and press enter.\n");
+//	}
+//
+//	while(1)
+//	{
+//		printf("1 - Short time | 5 points\t 2 - Medium time | 5 points\t 3 - Long time | 5 points\n"
+//			   "4 - Short time | 7 points\t 5 - Medium time | 7 points\t 6 - Long time | 7 points\n"
+//			   "7 - Short time | 9 points\t 8 - Medium time | 9 points\t 9 - Long time | 9 points\n"
+//			   "Enter your choice:");
+//		store_input(time);
+//
+//		if(time[0] >= '1' && time[0] <= 9)
+//			break;
+//	}
+//
+//	while(1)
+//	{
+//		// Add a print with all playable boards 
+//		printf("Enter the name of the board you want to play on:");
+//		store_input(board);
+//
+//		if()
+//			break;
+//		else
+//			printf("Please type a valid choice and press enter.\n");
+//	}
+//
+//	// Lauch a game with all collected data.
 
 }
 
