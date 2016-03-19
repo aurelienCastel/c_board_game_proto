@@ -7,6 +7,7 @@ struct cell
 {
 	uint8_t is_hole;
 	uint8_t is_border;
+	struct player* check_against;
 	struct token* token;
 };
 

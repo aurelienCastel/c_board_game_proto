@@ -4,8 +4,6 @@
 #include<stddef.h>
 #include <stdio.h>
 
-#define LONGEST_INPUT 255
-
 uint8_t string_length(char* string)
 {
 	uint8_t i;
@@ -29,9 +27,9 @@ char* string_copy(char* string, uint8_t length)
 
 uint8_t are_string_equal(char* string, char* string_2)
 {
-	uint8_t i = 0;
+	uint8_t i;
 
-	while(string[i] == string_2[i])
+	for(i = 0; string[i] == string_2[i]; i++)
 	{
 		if(string[i] == '\0')
 			return 1;
@@ -40,14 +38,52 @@ uint8_t are_string_equal(char* string, char* string_2)
 	return 0;
 }
 
-void store_input(char* storage)
+char* get_input(uint8_t max_length)
 {
 	uint8_t i;
 
-	for(i = 0; (storage[i] = getchar()) != '\n' && i < LONGEST_INPUT; i++);
+	char* input = malloc(max_length + 1 * sizeof(*input));
 
-	if(storage[i] != '\n')
+	for(i = 0; (input[i] = getchar()) != '\n' && i <= max_length; i++);
+
+	if(input[i] != '\n')
 		while(getchar() != '\n');
 
-	storage[i] = '\0';
+	input[i] = '\0';
+
+	return input;
+}
+
+char* int_to_ordinal(uint8_t integer)
+{
+	switch(integer)
+	{
+		case 1:
+			return "first";
+			break;
+		case 2:
+			return "second";
+			break;
+		case 3:
+			return "third";
+			break;
+		case 4:
+			return "forth";
+			break;
+		case 5:
+			return "fifth";
+			break;
+		case 6:
+			return "sixth";
+			break;
+		case 7:
+			return "seventh";
+			break;
+		case 8:
+			return "eighth";
+			break;
+		default:
+			return "?";
+			break;
+	}
 }

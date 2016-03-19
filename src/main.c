@@ -12,14 +12,7 @@
 
 int main(void)
 {
-	//main_menu();
-
-	int i;
-	for(i = 0; Heroes[i] != NULL; i++)
-		printf("%s\n", Heroes[i]->name);
-
-	for(i = 0; Boards[i] != NULL; i++)
-		printf("%s\n", Boards[i]->name);
+	main_menu();
 
 	return 0;
 }

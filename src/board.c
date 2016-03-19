@@ -44,6 +44,7 @@ void init_board(struct board* board, struct board_model* model)
 			if(model->model[y][x] == '*')
 			{
 				board->grid[y][x].token = NULL;
+				board->grid[y][x].check_against = NULL;
 				board->grid[y][x].is_hole = 0;
 			}
 			else if(model->model[y][x] == ' ')
