@@ -1,9 +1,3 @@
-// TODO :
-// enum tokens:   Maybe i can remove this and use adresses of globals token to difference empty from forbidden...
-// handle_input():  Maybe if the function return a string a can get rid of the stack issue.
-// coin_state() / coin_flip() : Change this to a something that randomize players order automatically.
-// free the memory.
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>

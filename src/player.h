@@ -11,7 +11,7 @@ struct player
 {
 	char* name;
 	uint8_t is_ai;
-	uint8_t number;
+	uint8_t order;
 	uint8_t team;
 	color color;
 	struct hero* hero;
