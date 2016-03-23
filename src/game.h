@@ -23,6 +23,8 @@ void launch_game(struct game* game);
 
 void determine_order(struct player players[], uint8_t nb_players);
 uint8_t is_order_taken(struct player players[], uint8_t player_nb);
-void sort_by_order(struct player players[]);
+void sort_by_order(struct player players[], uint8_t start, uint8_t end);
+void swap(struct player players[], uint8_t index1, uint8_t index2);
+void print_players(struct player players[], uint8_t nb_players);
 
 #endif

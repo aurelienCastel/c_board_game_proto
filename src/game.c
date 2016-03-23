@@ -19,8 +19,9 @@ void init_game(struct game* game, struct player players[],
 void launch_game(struct game* game)
 {
 	determine_order(game->players, game->nb_players);
-	sort_by_order(game->players);
+	sort_by_order(game->players, 0, game->nb_players);
 	printf("Here is the order in wihch players gonna plays:\n");
+	print_players(game->players, game->nb_players);
 
 	// Print board
 	// player plays
@@ -59,67 +60,51 @@ uint8_t is_order_taken(struct player players[], uint8_t player_nb)
 	return 0;
 }
 
-void sort_by_order(struct player players[])
+void swap(struct player players[], uint8_t index1, uint8_t index2)
 {
-	void swap(struct player players[],
-			  uint8_t index1, uint8_t index2)
-	{
-		struct player temp = players[index1];
+	struct player temp = players[index1];
 
-		players[index1] = players[index2];
+	players[index1] = players[index2];
 
-		players[index2] = temp;
-	}
+	players[index2] = temp;
+}
 
-	void quickSort(int tableau[], int debut, int fin)
-	{
-	int gauche = debut-1;
+void sort_by_order(struct player players[], uint8_t start, uint8_t end)
+{
+	uint8_t left = start - 1;
+	uint8_t right = end + 1;
+	struct player pivot = players[start];
 
-	int droite = fin+1;
-
-	const int pivot = tableau[debut];
-
-
-	/* Si le tableau est de longueur nulle, il n'y a rien à faire. */
-
-	if(debut >= fin)
-
+	if(start >= end)
 		return;
 
-
-	/* Sinon, on parcourt le tableau, une fois de droite à gauche, et une
-
-	   autre de gauche à droite, à la recherche d'éléments mal placés,
-
-	   que l'on permute. Si les deux parcours se croisent, on arrête. */
-
 	while(1)
-
 	{
+		do right--; while(players[right].order > pivot.order);
+		do left++; while(players[left].order < pivot.order);
 
-		do droite--; while(tableau[droite] > pivot);
+		if(left < right)
+			swap(players, left, right);
 
-		do gauche++; while(tableau[gauche] < pivot);
-
-
-		if(gauche < droite)
-
-			echanger(tableau, gauche, droite);
-
-		else break;
-
+		else
+			break;
 	}
 
+	sort_by_order(players, start, right);
+	sort_by_order(players, right + 1, end);
+}
 
-	/* Maintenant, tous les éléments inférieurs au pivot sont avant ceux
+void print_players(struct player players[], uint8_t nb_players)
+{
+	uint8_t i;
 
-	   supérieurs au pivot. On a donc deux groupes de cases à trier. On utilise
+	for(i = 0; i < nb_players; i++)
+	{
+		printf("%s", players[i].name);
 
-	   pour cela... la méthode quickSort elle-même ! */
-
-	quickSort(tableau, debut, droite);
-
-	quickSort(tableau, droite+1, fin);
-
+		if(i == nb_players - 1)
+			printf("\n");
+		else
+			printf(" |");
 	}
 }
