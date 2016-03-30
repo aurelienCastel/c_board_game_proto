@@ -4,6 +4,7 @@
 #include <time.h>
 
 #include "game.h"
+#include "util.h"
 
 void init_game(struct game* game, struct player players[],
 			   struct board* board, uint8_t nb_players,
@@ -18,21 +19,27 @@ void init_game(struct game* game, struct player players[],
 
 void launch_game(struct game* game)
 {
+	uint8_t i;
+	struct player* winner;
+
 	determine_order(game->players, game->nb_players);
-	sort_by_order(game->players, 0, game->nb_players);
+	sort_by_order(game->players, 0, game->nb_players - 1);
 	printf("Here is the order in wihch players gonna plays:\n");
 	print_players(game->players, game->nb_players);
 
-	// Print board
-	// player plays
-		// Check if the cell exist
-		// Check if the cell is playable
-		// Update the cell
-		// Update others cells according to this play (it have to be recursive, taking a token can change a check_against..)
-		// Check points
-		// Check if the board is playable
-			// if the board board is not playable
-			// The player with the higher points wins, otherwise the player with the less check agains him win.
+	print_board(game->board);
+
+	for(i = 0; i < game->nb_players; i++)
+	{
+		player_plays(game, game->players + i);
+		winner = get_winner(game);
+		if(winner != NULL)
+			break;
+		if(i == game->nb_players - 1)
+			i = 0;
+	}
+
+	printf("The winner of the game is %s.\n", winner->name);
 }
 
 void determine_order(struct player players[], uint8_t nb_players)
@@ -107,4 +114,52 @@ void print_players(struct player players[], uint8_t nb_players)
 		else
 			printf(" |");
 	}
+}
+
+struct coord* string_to_coord(struct game* game, char* string)
+{
+	return NULL;
+}
+
+void player_plays(struct game* game, struct player* player)
+{
+	char* input;
+	struct coord* coord;
+
+	printf("It's %s turn to play.\n", player->name);
+	if(!player->is_ai)
+	{
+		while(1)
+		{
+			printf("Enter your move:");
+			coord = get_input(10);
+			coord = string_to_coord(game, input);
+			if(coord == NULL)
+				bad_input_message();
+			else
+				break;
+		}
+	}
+	else
+	{
+		printf("%s is thinking...\n", player->name);
+	}
+	play_move(game, player, coord);
+}
+
+void play_move(struct game* game, struct player* player, struct coord* coord)
+{
+	game->board->grid[coord.y][coord.x].token = &(game->players[player_nb].token);
+
+	//Update others cells according to this play (it have to be recursive, taking a token can change a check_against..)
+}
+
+struct player* get_winner(struct game* game)
+{
+	// Check points
+	// Check if the board is playable
+		// if the board board is not playable
+		// The player with the higher points wins, otherwise the player with the less check agains him win.
+
+	return NULL;
 }

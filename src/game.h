@@ -27,4 +27,9 @@ void sort_by_order(struct player players[], uint8_t start, uint8_t end);
 void swap(struct player players[], uint8_t index1, uint8_t index2);
 void print_players(struct player players[], uint8_t nb_players);
 
+struct coord* string_to_coord(struct game* game, char* string);
+void player_plays(struct game* game, struct player* player);
+void play_move(struct game* game, struct player* player, struct coord* coord);
+struct player* get_winner(struct game* game);
+
 #endif

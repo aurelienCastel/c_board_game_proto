@@ -117,11 +117,6 @@ void pve_menu()
 	free(players);
 }
 
-void bad_input_message()
-{
-	printf("Please type a valid choice and press enter.\n");
-}
-
 char* player_name_request(int8_t player_number, struct player players[])
 {
 	char* name;

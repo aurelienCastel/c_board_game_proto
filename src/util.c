@@ -54,36 +54,32 @@ char* get_input(uint8_t max_length)
 	return input;
 }
 
+void bad_input_message()
+{
+	printf("Please type a valid choice and press enter.\n");
+}
+
 char* int_to_ordinal(uint8_t integer)
 {
 	switch(integer)
 	{
 		case 1:
 			return "first";
-			break;
 		case 2:
 			return "second";
-			break;
 		case 3:
 			return "third";
-			break;
 		case 4:
 			return "forth";
-			break;
 		case 5:
 			return "fifth";
-			break;
 		case 6:
 			return "sixth";
-			break;
 		case 7:
 			return "seventh";
-			break;
 		case 8:
 			return "eighth";
-			break;
 		default:
 			return "?";
-			break;
 	}
 }

@@ -13,8 +13,6 @@ void pve_menu();
 
 void launch_game(struct game* game);
 
-void bad_input_message();
-
 char* player_name_request(int8_t player_number, struct player players[]);
 struct hero* hero_request(int8_t player_number, uint8_t is_ai);
 color color_request(int8_t player_number, struct player players[]);
