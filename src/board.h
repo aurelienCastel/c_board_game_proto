@@ -23,21 +23,20 @@ struct row_info
 	uint8_t limit_right;
 };
 
+struct board_model
+{
+	char* name;
+	uint8_t nb_rows;
+	char** model;
+};
+
 struct board
 {
 	char* name;
 	struct cell** grid;
-	uint8_t row_nb;
+	uint8_t nb_rows;
 	struct row_info* row_info;
 };
-
-struct board_model
-{
-	char* name;
-	uint8_t row_nb;
-	char** model;
-};
-
 
 void init_board(struct board* board, struct board_model* model);
 void delete_board(struct board board);

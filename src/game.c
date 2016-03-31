@@ -31,7 +31,7 @@ void launch_game(struct game* game)
 
 	for(i = 0; i < game->nb_players; i++)
 	{
-		player_plays(game, game->players + i);
+		player_plays(game->board, game->players + i);
 		winner = get_winner(game);
 		if(winner != NULL)
 			break;
@@ -116,15 +116,64 @@ void print_players(struct player players[], uint8_t nb_players)
 	}
 }
 
-struct coord* string_to_coord(struct game* game, char* string)
+struct coord string_to_coord(char* string)
 {
-	return NULL;
+	uint8_t i;
+	struct coord coord = {.y = 0, .x = 0};
+
+	for(i = 0; is_digit(string[i]); i++)
+	{
+		coord.y *= 10;
+		coord.y += char_to_int(string[i]);
+	}
+	if(string[i] == ' ')
+		i++;
+	for(; is_digit(string[i]); i++)
+	{
+		coord.x *= 10;
+		coord.x += char_to_int(string[i]);
+	}
+
+	coord.y -= 1;
+	coord.x -= 1;
+
+	return coord;
 }
 
-void player_plays(struct game* game, struct player* player)
+uint8_t player_is_in_array(struct player* player, struct player check_against[])
+{
+	uint8_t i;
+
+	for(i = 0; check_against + i != NULL; i++)
+	{
+		if(player == check_against + i)
+			return 1;
+	}
+
+	return 0;
+}
+
+uint8_t is_cell_present(struct board* board, uint8_t y, uint8_t x)
+{
+	if(y < 0 || y >= board->nb_rows ||
+	   x < board->row_info[y].limit_left || x > board->row_info[y].limit_right ||
+	   board->grid[y][x].is_hole)
+		return 0;
+	return 1;
+}
+
+uint8_t is_cell_playable_for(struct player* player, struct board* board, uint8_t y, uint8_t x)
+{ 
+	if(!is_cell_present(board, y, x) || board->grid[y][x].token != NULL ||
+	   player_is_in_array(player, board->grid[y][x].check_against))
+		return 0;
+	return 1;
+}
+
+void player_plays(struct board* board, struct player* player)
 {
 	char* input;
-	struct coord* coord;
+	struct coord coord;
 
 	printf("It's %s turn to play.\n", player->name);
 	if(!player->is_ai)
@@ -132,9 +181,9 @@ void player_plays(struct game* game, struct player* player)
 		while(1)
 		{
 			printf("Enter your move:");
-			coord = get_input(10);
-			coord = string_to_coord(game, input);
-			if(coord == NULL)
+			input = get_input(10);
+			coord = string_to_coord(input);
+			if(!is_cell_playable_for(player, board, coord.y, coord.x)) // Add a different message when the coord is not playable.
 				bad_input_message();
 			else
 				break;
@@ -144,12 +193,12 @@ void player_plays(struct game* game, struct player* player)
 	{
 		printf("%s is thinking...\n", player->name);
 	}
-	play_move(game, player, coord);
+	play_move(board, player, &coord);
 }
 
-void play_move(struct game* game, struct player* player, struct coord* coord)
+void play_move(struct board* board, struct player* player, struct coord* coord)
 {
-	game->board->grid[coord.y][coord.x].token = &(game->players[player_nb].token);
+	board->grid[coord->y][coord->x].token = &(player->token);
 
 	//Update others cells according to this play (it have to be recursive, taking a token can change a check_against..)
 }

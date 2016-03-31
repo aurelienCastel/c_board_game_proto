@@ -59,6 +59,16 @@ void bad_input_message()
 	printf("Please type a valid choice and press enter.\n");
 }
 
+int8_t is_digit(char character)
+{
+	return character >= '0' && character <= '9';
+}
+
+int8_t char_to_int(char character)
+{
+	return character - 48;
+}
+
 char* int_to_ordinal(uint8_t integer)
 {
 	switch(integer)

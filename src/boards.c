@@ -2,14 +2,14 @@
 
 #include "boards.h"
 
-struct board_model Board_5x5 = {.name = "5x5", .row_nb = 5,
+struct board_model Board_5x5 = {.name = "5x5", .nb_rows = 5,
 	.model = (char*[]) {"*****",
 					    "*****",
 					    "*****",
 					    "*****",
 					    "*****"}};
   
-struct board_model Board_6x6 = {.name = "6x6", .row_nb = 6,
+struct board_model Board_6x6 = {.name = "6x6", .nb_rows = 6,
 	.model = (char*[]) {"******",
 					    "******",
 					    "******",
@@ -17,7 +17,7 @@ struct board_model Board_6x6 = {.name = "6x6", .row_nb = 6,
 					    "******",
 					    "******"}};
 
-struct board_model Board_7x7 = {.name = "7x7", .row_nb = 7,
+struct board_model Board_7x7 = {.name = "7x7", .nb_rows = 7,
 	.model = (char*[]) {"*******",
 						"*******",
 						"*******",
@@ -26,7 +26,7 @@ struct board_model Board_7x7 = {.name = "7x7", .row_nb = 7,
 						"*******",
 						"*******"}};
 
-struct board_model Board_7x7_hole_center = {.name = "7x7 hole center", .row_nb = 7,
+struct board_model Board_7x7_hole_center = {.name = "7x7 hole center", .nb_rows = 7,
 	.model = (char*[]) {"*******",
 					    "*******",
 					    "*******",
@@ -35,7 +35,7 @@ struct board_model Board_7x7_hole_center = {.name = "7x7 hole center", .row_nb =
 					    "*******",
 					    "*******"}};
 
-struct board_model Board_big_diamond = {.name = "big diamond", .row_nb = 11,
+struct board_model Board_big_diamond = {.name = "big diamond", .nb_rows = 11,
 	.model = (char*[]) {"     *",
 					    "    ***",
 					    "   *****",

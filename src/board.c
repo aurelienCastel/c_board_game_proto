@@ -8,7 +8,7 @@
 
 uint8_t is_border(struct board* board, uint8_t y, uint8_t x)
 {
-	if(y == 0 || y == board->row_nb - 1 ||
+	if(y == 0 || y == board->nb_rows - 1 ||
 	   x == board->row_info[y].limit_right || x == board->row_info[y].limit_left || 
 	   x < board->row_info[y - 1].limit_left || x > board->row_info[y - 1].limit_right ||
 	   x < board->row_info[y + 1].limit_left || x > board->row_info[y + 1].limit_right ||
@@ -24,12 +24,12 @@ void init_board(struct board* board, struct board_model* model)
 
 	board->name = string_copy(model->name, string_length(model->name));
 
-	board->row_nb = model->row_nb;
+	board->nb_rows = model->nb_rows;
 
-	board->grid = malloc(board->row_nb * sizeof *(board->grid));
-	board->row_info = malloc(board->row_nb * sizeof *(board->row_info));
+	board->grid = malloc(board->nb_rows * sizeof *(board->grid));
+	board->row_info = malloc(board->nb_rows * sizeof *(board->row_info));
 
-	for(y = 0; y < board->row_nb; y++)
+	for(y = 0; y < board->nb_rows; y++)
 	{
 		board->grid[y] = malloc(string_length(model->model[y]) * sizeof **(board->grid));
 		board->row_info[y].limit_left = 0;
@@ -54,7 +54,7 @@ void init_board(struct board* board, struct board_model* model)
 		}
 	}
 
-	for(y = 0; y < board->row_nb; y++)
+	for(y = 0; y < board->nb_rows; y++)
 	{
 		for(x = board->row_info[y].limit_left;
 				x <= board->row_info[y].limit_right; x++)
@@ -72,7 +72,7 @@ void delete_board(struct board board)
 
 	free(board.name);
 	free(board.row_info);
-	for(y = 0; y < board.row_nb; y++)
+	for(y = 0; y < board.nb_rows; y++)
 		free(board.grid[y]);
 	free(board.grid);
 }
@@ -94,7 +94,7 @@ void print_board(struct board* board)
 			printf("----");
 	}
 
-	for(y = 0; y < board->row_nb; y++)
+	for(y = 0; y < board->nb_rows; y++)
 	{
 		printf("\n");
 		printf("\t");
@@ -117,7 +117,7 @@ void print_board(struct board* board)
 			}
 		}
 
-		if(y == board->row_nb - 1)
+		if(y == board->nb_rows - 1)
 			break;
 
 		left = board->row_info[y].limit_left < board->row_info[y + 1].limit_left ? y : y + 1;
