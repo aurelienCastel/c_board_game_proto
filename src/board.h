@@ -2,6 +2,7 @@
 #define board_h
 
 #include <stdint.h>
+#include "player.h"
 
 struct coord
 {
@@ -13,7 +14,7 @@ struct cell
 {
 	uint8_t is_hole;
 	uint8_t is_border;
-	struct player* check_against;
+	struct player* check_for[3];
 	struct token* token;
 };
 
