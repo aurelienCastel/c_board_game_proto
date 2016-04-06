@@ -1,9 +1,9 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<stddef.h>
 
 #include "menu.h"
 #include "util.h"
-#include "heroes.h"
 #include "player.h"
 #include "boards.h"
 #include "game.h"
@@ -40,81 +40,82 @@ void main_menu()
 
 void pvp_menu()
 {
-	uint8_t i;
+//	struct player* players = malloc(sizeof(*players) * 2);
+//
+//	uint16_t turn_time;
+//	uint8_t points_to_win;
+//	struct board board;
+//	struct game game;
 
-	char* player_name;
-	struct hero* player_hero;
-	color player_color;
+//	init_player(&players[0], &players[1],
+//				player_name_request(0, players), 0, color_request(0, players));
+//	init_player(&players[1], &players[0],
+//				player_name_request(1, players), 0, color_request(1, players));
 
-	uint8_t nb_player = 2;
-	struct player* players = malloc(nb_player * sizeof (*players));
+//	turn_time = time_request();
+//	points_to_win = points_request();
 
-	uint16_t turn_time;
-	uint8_t points_to_win;
+//  init_board(&board, board_request());
+
+//	init_game(&game, players, &board, points_to_win, turn_time);
+
+//	launch_game(&game);
+
+	struct player* players = malloc(sizeof(*players) * 2);
 	struct board board;
 	struct game game;
 
-	for(i = 0; i < nb_player; i++)
-	{
-		player_name = player_name_request(i, players);
-		player_hero = hero_request(i, 0);
-		player_color = color_request(i, players);
-		init_player(players + i, player_name, 0, i, player_color, player_hero);
-		free(player_name);
-	}
+	init_player(&players[0], &players[1], "player1", 0, FG_BLUE);
+	init_player(&players[1], &players[0], "player2", 0, FG_RED);
 
-	turn_time = time_request();
-	points_to_win = points_request();
+	init_board(&board, &Board_5x5);
 
-	init_board(&board, board_request());
-
-	init_game(&game, players, &board, nb_player, points_to_win, turn_time);
-
+	init_game(&game, players, &board, 5, 15);
 	launch_game(&game);
-
-	for(i = 0; i < nb_player; i++)
-		delete_player(players[i]);
-	free(players);
 }
 
 void pve_menu()
 {
-	uint8_t i;
-
-	char* player_name;
-	struct hero* player_hero;
-	struct hero* ai_hero;
-
-	uint8_t nb_player = 2;
-	struct player* players = malloc(nb_player * sizeof (*players));
+	struct player* players = malloc(sizeof(*players) * 2);
 
 	uint16_t turn_time;
 	uint8_t points_to_win;
 	struct board board;
 	struct game game;
 
-	player_name = player_name_request(-1, NULL);
-	player_hero = hero_request(-1, 0);
-
-	ai_hero = hero_request(-1, 1);
-
-	init_player(players + 0, player_name, 0, 1, FG_BLUE, player_hero);
-	init_player(players + 1, "AI-1", 1, 2, FG_RED, ai_hero);
-
-	free(player_name);
+	init_player(&players[0], &players[1], player_name_request(-1, NULL), 0, FG_BLUE);
+	init_player(&players[1], &players[0], "AI", 1, FG_RED);
 
 	turn_time = time_request();
 	points_to_win = points_request();
 
 	init_board(&board, board_request());
 
-	init_game(&game, players, &board, nb_player, points_to_win, turn_time);
+	init_game(&game, players, &board, points_to_win, turn_time);
 
 	launch_game(&game);
+}
 
-	for(i = 0; i < nb_player; i++)
-		delete_player(players[i]);
-	free(players);
+void print_boards()
+{
+	uint8_t i;
+
+	for(i = 0; Boards[i] != NULL; i++)
+	{
+		printf("%s\n", Boards[i]->name);
+	}
+}
+
+uint8_t is_name_taken(char* name, int8_t player_number, struct player players[])
+{
+	uint8_t i;
+
+	for(i = 0; i < player_number; i++)
+	{
+		if(strings_are_equal(name, players[i].name))
+			return 1;
+	}
+	return 0;
 }
 
 char* player_name_request(int8_t player_number, struct player players[])
@@ -127,6 +128,7 @@ char* player_name_request(int8_t player_number, struct player players[])
 			printf("Enter your name:");
 		else
 			printf("Enter %s player's name:", int_to_ordinal(player_number + 1));
+
 		name = get_input(30);
 
 		if(name[0] == '\0')
@@ -146,39 +148,16 @@ char* player_name_request(int8_t player_number, struct player players[])
 	}
 }
 
-struct hero* hero_request(int8_t player_number, uint8_t is_ai)
+uint8_t is_color_taken(color color, int8_t player_number, struct player players[])
 {
-	char* name;
-	struct hero* hero;
+	uint8_t i;
 
-	while(1)
+	for(i = 0; i < player_number; i++)
 	{
-		print_heroes();
-
-		if(player_number == -1)
-		{
-			if(!is_ai)
-				printf("Enter your hero's name:");
-			else
-				printf("Enter the name of your oponent's hero:");
-		}
-		else
-			printf("Enter %s player's%s hero's name:", int_to_ordinal(player_number + 1), 
-														is_ai? "(AI)" : "");
-		name = get_input(30);
-		hero = get_hero_ref(name);
-
-		if(hero != NULL)
-		{
-			free(name);
-			return hero;
-		}
-		else
-		{
-			free(name);
-			bad_input_message();
-		}
+		if(color == players[i].color)
+			return 1;
 	}
+	return 0;
 }
 
 color color_request(int8_t player_number, struct player players[])
@@ -224,6 +203,39 @@ color color_request(int8_t player_number, struct player players[])
 			return color;
 		else
 			printf("This color is already taken by another player.\n");
+	}
+}
+
+struct board_model* get_board_model_ref(char* board_name)
+{
+	uint8_t i;
+
+	for(i = 0; Boards[i] != NULL; i++)
+	{
+		if(strings_are_equal(board_name, Boards[i]->name))
+			return Boards[i];
+	}
+
+	return NULL;
+}
+
+struct board_model* board_request()
+{
+	char* name;
+	struct board_model* board_model;
+
+	while(1)
+	{
+		print_boards();
+		printf("Enter the name of the board you want to play on:");
+		name = get_input(60);
+		board_model = get_board_model_ref(name);
+		free(name);
+
+		if(board_model != NULL)
+			return board_model;
+		else
+			bad_input_message();
 	}
 }
 
@@ -279,94 +291,4 @@ uint8_t points_request()
 				bad_input_message();
 		}
 	}
-}
-
-struct board_model* board_request()
-{
-	char* name;
-	struct board_model* board_model;
-
-	while(1)
-	{
-		print_boards();
-		printf("Enter the name of the board you want to play on:");
-		name = get_input(60);
-		board_model = get_board_model_ref(name);
-		free(name);
-
-		if(board_model != NULL)
-			return board_model;
-		else
-			bad_input_message();
-	}
-}
-
-uint8_t is_name_taken(char* name, int8_t player_number, struct player players[])
-{
-	uint8_t i;
-
-	for(i = 0; i < player_number; i++)
-	{
-		if(are_string_equal(name, players[i].name))
-			return 1;
-	}
-	return 0;
-}
-
-uint8_t is_color_taken(color color, int8_t player_number, struct player players[])
-{
-	uint8_t i;
-
-	for(i = 0; i < player_number; i++)
-	{
-		if(color == players[i].color)
-			return 1;
-	}
-	return 0;
-}
-
-void print_heroes()
-{
-	uint8_t i;
-
-	for(i = 0; Heroes[i] != NULL; i++)
-	{
-		printf("%s\n", Heroes[i]->name);
-	}
-}
-
-void print_boards()
-{
-	uint8_t i;
-
-	for(i = 0; Boards[i] != NULL; i++)
-	{
-		printf("%s\n", Boards[i]->name);
-	}
-}
-
-struct hero* get_hero_ref(char* hero_name)
-{
-	uint8_t i;
-
-	for(i = 0; Heroes[i] != NULL; i++)
-	{
-		if(are_string_equal(hero_name, Heroes[i]->name))
-			return Heroes[i];
-	}
-
-	return NULL;
-}
-
-struct board_model* get_board_model_ref(char* board_name)
-{
-	uint8_t i;
-
-	for(i = 0; Boards[i] != NULL; i++)
-	{
-		if(are_string_equal(board_name, Boards[i]->name))
-			return Boards[i];
-	}
-
-	return NULL;
 }

@@ -8,10 +8,8 @@
 
 uint8_t is_border(struct board* board, uint8_t y, uint8_t x)
 {
-	if(y == 0 || y == board->nb_rows - 1 ||
-	   x == board->row_info[y].limit_right || x == board->row_info[y].limit_left || 
-	   x < board->row_info[y - 1].limit_left || x > board->row_info[y - 1].limit_right ||
-	   x < board->row_info[y + 1].limit_left || x > board->row_info[y + 1].limit_right ||
+	if(y == 0 || y == board->height - 1 ||
+	   x == 0 || x == board->length - 1 || 
 	   board->grid[y - 1][x].is_hole || board->grid[y][x - 1].is_hole ||
 	   board->grid[y + 1][x].is_hole || board->grid[y][x + 1].is_hole) 
 		return 1;
@@ -24,40 +22,31 @@ void init_board(struct board* board, struct board_model* model)
 
 	board->name = string_copy(model->name, string_length(model->name));
 
-	board->nb_rows = model->nb_rows;
+	board->height = model->nb_rows;
+	board->length = longest_string(model->model, model->nb_rows);
 
-	board->grid = malloc(board->nb_rows * sizeof *(board->grid));
-	board->row_info = malloc(board->nb_rows * sizeof *(board->row_info));
+	board->grid = malloc(board->height * sizeof *(board->grid));
 
-	for(y = 0; y < board->nb_rows; y++)
+	for(y = 0; y < board->height; y++)
 	{
-		board->grid[y] = malloc(string_length(model->model[y]) * sizeof **(board->grid));
-		board->row_info[y].limit_left = 0;
-		board->row_info[y].limit_right = 0;
+		board->grid[y] = malloc(board->length * sizeof **(board->grid));
 
-		for(x = 0; model->model[y][x] == ' '; x++)
-			board->row_info[y].limit_left++;
-		board->row_info[y].limit_right = board->row_info[y].limit_left - 1;
-
-		for(; model->model[y][x] != '\0'; x++)
+		for(x = 0; model->model[y][x] != '\0'; x++)
 		{
-			if(model->model[y][x] == '*')
-			{
-				board->grid[y][x].token = NULL;
-				board->grid[y][x].check_for[0] = NULL;
-				board->grid[y][x].is_hole = 0;
-			}
-			else if(model->model[y][x] == ' ')
-				board->grid[y][x].is_hole = 1;
+			board->grid[y][x].token = NULL;
+			board->grid[y][x].check_against[0] = NULL;
+			board->grid[y][x].check_against[1] = NULL;
 
-			board->row_info[y].limit_right++;
+			if(model->model[y][x] == '*')
+				board->grid[y][x].is_hole = 0;
+			else
+				board->grid[y][x].is_hole = 1;
 		}
 	}
 
-	for(y = 0; y < board->nb_rows; y++)
+	for(y = 0; y < board->height; y++)
 	{
-		for(x = board->row_info[y].limit_left;
-				x <= board->row_info[y].limit_right; x++)
+		for(x = 0; x < board->length; x++)
 		{
 			if(!board->grid[y][x].is_hole)
 				board->grid[y][x].is_border = is_border(board, y, x);
@@ -65,14 +54,12 @@ void init_board(struct board* board, struct board_model* model)
 	}
 }
 
-
 void delete_board(struct board board)
 {
 	uint8_t y;
 
 	free(board.name);
-	free(board.row_info);
-	for(y = 0; y < board.nb_rows; y++)
+	for(y = 0; y < board.height; y++)
 		free(board.grid[y]);
 	free(board.grid);
 }
@@ -84,9 +71,7 @@ void print_board(struct board* board)
 
 	printf("\n");
 	printf("\t");
-	for(x = 0; x < board->row_info[0].limit_left; x++)
-		printf("    ");
-	for(; x <= board->row_info[0].limit_right; x++)
+	for(x = 0; x < board->length; x++)
 	{
 		if(board->grid[0][x].is_hole)
 			printf("    ");
@@ -98,73 +83,35 @@ void print_board(struct board* board)
 	{
 		printf("\n");
 		printf("\t");
-		for(x = 0; x < board->row_info[y].limit_left; x++)
-			printf("    ");
-		printf("|");
-		for(; x <= board->row_info[y].limit_right; x++)
+		for(x = 0; x < board->length; x++)
 		{
 			if(board->grid[y][x].is_hole)
 			{
-				if(!board->grid[y][x + 1].is_hole)
-					printf("   |");
-				else
-					printf("    ");
+				printf("   ");
+				if(x < board->length - 1 && board->grid[y][x + 1].is_hole)
+					printf(" ");
 			}
 			else
 			{
-				cc_fprintf(BG_DARK_YELLOW, stdout, "   ");
+				printf("|");
+				if(board->grid[y][x].token == NULL)
+					cc_fprintf(BG_DARK_YELLOW, stdout, "   ");
+				else
+					cc_fprintf(board->grid[y][x].token->color, stdout, " O ");
 				printf("|");
 			}
 		}
 
-		if(y == board->nb_rows - 1)
-			break;
-
-		left = board->row_info[y].limit_left < board->row_info[y + 1].limit_left ? y : y + 1;
-		right = board->row_info[y].limit_right > board->row_info[y + 1].limit_right ? y : y + 1;
-
 		printf("\n");
 		printf("\t");
-		for(x = 0; x < board->row_info[left].limit_left; x++)
-			printf("    ");
-		for(; x <= board->row_info[right].limit_right; x++)
+		for(x = 0; x < board->length; x++)
 		{
-			if(x >= board->row_info[y].limit_left && x <= board->row_info[y].limit_right)
-			{
-				if(x >= board->row_info[y + 1].limit_left && x <= board->row_info[y + 1].limit_right)
-				{
-					if(board->grid[y][x].is_hole)
-					{
-						if(board->grid[y + 1][x].is_hole)
-							printf("    ");
-						else
-							printf("----");
-					}
-					else
-						printf("----");
-				}
-				else if(board->grid[y][x].is_hole)
-					printf("    ");
-				else
-					printf("----");
-			}
-			else if(board->grid[y + 1][x].is_hole)
+			if(board->grid[y][x].is_hole &&
+			   (y == board->height - 1 || board->grid[y + 1][x].is_hole))
 				printf("    ");
 			else
 				printf("----");
 		}
-	}
-
-	printf("\n");
-	printf("\t");
-	for(x = 0; x < board->row_info[y].limit_left; x++)
-		printf("    ");
-	for(; x <= board->row_info[y].limit_right; x++)
-	{
-		if(board->grid[y][x].is_hole)
-			printf("    ");
-		else
-			printf("----");
 	}
 	printf("\n");
 }

@@ -14,14 +14,8 @@ struct cell
 {
 	uint8_t is_hole;
 	uint8_t is_border;
-	struct player* check_for[3];
-	struct token* token;
-};
-
-struct row_info
-{
-	uint8_t limit_left;
-	uint8_t limit_right;
+	struct player* check_against[2];
+	struct player* token;
 };
 
 struct board_model
@@ -35,8 +29,8 @@ struct board
 {
 	char* name;
 	struct cell** grid;
-	uint8_t nb_rows;
-	struct row_info* row_info;
+	uint8_t height;
+	uint8_t length;
 };
 
 void init_board(struct board* board, struct board_model* model);

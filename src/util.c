@@ -13,6 +13,22 @@ uint8_t string_length(char* string)
 	return i;
 }
 
+uint8_t longest_string(char* strings[], uint8_t array_length)
+{
+	uint8_t i;
+	uint8_t longest = 0;
+	uint8_t current;
+
+	for(i = 0; i < array_length; i++)
+	{
+		current = string_length(strings[i]);
+		if(current > longest)
+			longest = current;
+	}
+
+	return longest;
+}
+
 char* string_copy(char* string, uint8_t length)
 {
 	uint8_t i;
@@ -25,7 +41,7 @@ char* string_copy(char* string, uint8_t length)
 	return new_string;
 }
 
-uint8_t are_string_equal(char* string, char* string_2)
+uint8_t strings_are_equal(char* string, char* string_2)
 {
 	uint8_t i;
 
@@ -59,12 +75,12 @@ void bad_input_message()
 	printf("Please type a valid choice and press enter.\n");
 }
 
-int8_t is_digit(char character)
+uint8_t is_digit(char character)
 {
 	return character >= '0' && character <= '9';
 }
 
-int8_t char_to_int(char character)
+uint8_t char_to_int(char character)
 {
 	return character - 48;
 }
