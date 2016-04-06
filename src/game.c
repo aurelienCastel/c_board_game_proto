@@ -78,18 +78,15 @@ uint8_t player_is_in_array(struct player* player, struct player* players[])
 	return 0;
 }
 
-uint8_t cell_is_present(struct board* board, uint8_t y, uint8_t x)
+uint8_t cell_is_in(struct board* board, uint8_t y, uint8_t x)
 {
-	if(y < 0 || y >= board->nb_rows ||
-	   x < board->row_info[y].limit_left || x > board->row_info[y].limit_right ||
-	   board->grid[y][x].is_hole)
-		return 0;
-	return 1;
+	return y < board->height && x < board->length;
 }
 
 uint8_t cell_is_playable_for(struct player* player, struct board* board, uint8_t y, uint8_t x)
 { 
-	if(!cell_is_present(board, y, x) || board->grid[y][x].token != NULL ||
+	if(!cell_is_in(board, y, x) ||
+	   board->grid[y][x].is_hole|| board->grid[y][x].token != NULL ||
 	   player_is_in_array(player, board->grid[y][x].check_against))
 		return 0;
 	return 1;
@@ -196,28 +193,28 @@ void eliminate_border(struct board* board, struct player* player,
 {
 	uint8_t opponent_token_around = 0;
 
-	if(cell_is_present(board, y - 1, x) && board->grid[y - 1][x].token == player)
+	if(cell_is_in(board, y - 1, x) && board->grid[y - 1][x].token == player)
 		opponent_token_around++;
 
-	if(cell_is_present(board, y - 1, x + 1) && board->grid[y - 1][x + 1].token == player)
+	if(cell_is_in(board, y - 1, x + 1) && board->grid[y - 1][x + 1].token == player)
 		opponent_token_around++;
 
-	if(cell_is_present(board, y, x + 1) && board->grid[y][x + 1].token == player)
+	if(cell_is_in(board, y, x + 1) && board->grid[y][x + 1].token == player)
 		opponent_token_around++;
 
-	if(cell_is_present(board, y + 1, x + 1) && board->grid[y + 1][x + 1].token == player)
+	if(cell_is_in(board, y + 1, x + 1) && board->grid[y + 1][x + 1].token == player)
 		opponent_token_around++;
 
-	if(cell_is_present(board, y + 1, x) && board->grid[y + 1][x].token == player)
+	if(cell_is_in(board, y + 1, x) && board->grid[y + 1][x].token == player)
 		opponent_token_around++;
 
-	if(cell_is_present(board, y + 1, x - 1) && board->grid[y + 1][x - 1].token == player)
+	if(cell_is_in(board, y + 1, x - 1) && board->grid[y + 1][x - 1].token == player)
 		opponent_token_around++;
 
-	if(cell_is_present(board, y, x - 1) && board->grid[y][x - 1].token == player)
+	if(cell_is_in(board, y, x - 1) && board->grid[y][x - 1].token == player)
 		opponent_token_around++;
 
-	if(cell_is_present(board, y - 1, x - 1) && board->grid[y - 1][x - 1].token == player)
+	if(cell_is_in(board, y - 1, x - 1) && board->grid[y - 1][x - 1].token == player)
 		opponent_token_around++;
 
 	if(opponent_token_around >= 3)
@@ -230,35 +227,35 @@ void eliminate_border(struct board* board, struct player* player,
 void eliminate_borders_around(struct board* board, struct player* player, struct player* opponent,
 							  uint8_t y, uint8_t x)
 {
-	if(cell_is_present(board, y - 1, x) && board->grid[y - 1][x].is_border &&
+	if(cell_is_in(board, y - 1, x) && board->grid[y - 1][x].is_border &&
 	   board->grid[y - 1][x].token == opponent) 
 		eliminate_border(board, player, y - 1, x);
 
-	if(cell_is_present(board, y - 1, x + 1) && board->grid[y - 1][x + 1].is_border &&
+	if(cell_is_in(board, y - 1, x + 1) && board->grid[y - 1][x + 1].is_border &&
 	   board->grid[y - 1][x + 1].token == opponent) 
 		eliminate_border(board, player, y - 1, x + 1);
 
-	if(cell_is_present(board, y, x + 1) && board->grid[y][x + 1].is_border &&
+	if(cell_is_in(board, y, x + 1) && board->grid[y][x + 1].is_border &&
 	   board->grid[y][x + 1].token == opponent) 
 		eliminate_border(board, player, y, x + 1);
 
-	if(cell_is_present(board, y + 1, x + 1) && board->grid[y + 1][x + 1].is_border &&
+	if(cell_is_in(board, y + 1, x + 1) && board->grid[y + 1][x + 1].is_border &&
 	   board->grid[y + 1][x + 1].token == opponent) 
 		eliminate_border(board, player, y + 1, x + 1);
 
-	if(cell_is_present(board, y + 1, x) && board->grid[y + 1][x].is_border &&
+	if(cell_is_in(board, y + 1, x) && board->grid[y + 1][x].is_border &&
 	   board->grid[y + 1][x].token == opponent) 
 		eliminate_border(board, player, y + 1, x);
 
-	if(cell_is_present(board, y + 1, x - 1) && board->grid[y + 1][x - 1].is_border &&
+	if(cell_is_in(board, y + 1, x - 1) && board->grid[y + 1][x - 1].is_border &&
 	   board->grid[y + 1][x - 1].token == opponent) 
 		eliminate_border(board, player, y + 1, x - 1);
 
-	if(cell_is_present(board, y, x - 1) && board->grid[y][x - 1].is_border &&
+	if(cell_is_in(board, y, x - 1) && board->grid[y][x - 1].is_border &&
 	   board->grid[y][x - 1].token == opponent) 
 		eliminate_border(board, player, y, x - 1);
 
-	if(cell_is_present(board, y - 1, x - 1) && board->grid[y - 1][x - 1].is_border &&
+	if(cell_is_in(board, y - 1, x - 1) && board->grid[y - 1][x - 1].is_border &&
 	   board->grid[y - 1][x - 1].token == opponent) 
 		eliminate_border(board, player, y - 1, x - 1);
 }
@@ -347,7 +344,7 @@ void check_border(struct board* board, struct player* player, struct player* opp
 	board->grid[y][x].check_against[0] = NULL;
 	board->grid[y][x].check_against[1] = NULL;
 
-	if(cell_is_present(board, y - 1, x))
+	if(cell_is_in(board, y - 1, x))
 	{
 		if(board->grid[y - 1][x].token == player)
 			player_token_around++;
@@ -355,7 +352,7 @@ void check_border(struct board* board, struct player* player, struct player* opp
 			opponent_token_around++;
 	}
 
-	if(cell_is_present(board, y - 1, x + 1))
+	if(cell_is_in(board, y - 1, x + 1))
 	{
 		if(board->grid[y - 1][x + 1].token == player)
 			player_token_around++;
@@ -363,7 +360,7 @@ void check_border(struct board* board, struct player* player, struct player* opp
 			opponent_token_around++;
 	}
 
-	if(cell_is_present(board, y, x + 1))
+	if(cell_is_in(board, y, x + 1))
 	{
 		if(board->grid[y][x + 1].token == player)
 			player_token_around++;
@@ -371,7 +368,7 @@ void check_border(struct board* board, struct player* player, struct player* opp
 			opponent_token_around++;
 	}
 
-	if(cell_is_present(board, y + 1, x + 1))
+	if(cell_is_in(board, y + 1, x + 1))
 	{
 		if(board->grid[y + 1][x + 1].token == player)
 			player_token_around++;
@@ -379,7 +376,7 @@ void check_border(struct board* board, struct player* player, struct player* opp
 			opponent_token_around++;
 	}
 
-	if(cell_is_present(board, y + 1, x))
+	if(cell_is_in(board, y + 1, x))
 	{
 		if(board->grid[y + 1][x].token == player)
 			player_token_around++;
@@ -387,7 +384,7 @@ void check_border(struct board* board, struct player* player, struct player* opp
 			opponent_token_around++;
 	}
 
-	if(cell_is_present(board, y + 1, x - 1))
+	if(cell_is_in(board, y + 1, x - 1))
 	{
 		if(board->grid[y + 1][x - 1].token == player)
 			player_token_around++;
@@ -395,7 +392,7 @@ void check_border(struct board* board, struct player* player, struct player* opp
 			opponent_token_around++;
 	}
 
-	if(cell_is_present(board, y, x - 1))
+	if(cell_is_in(board, y, x - 1))
 	{
 		if(board->grid[y][x - 1].token == player)
 			player_token_around++;
@@ -403,7 +400,7 @@ void check_border(struct board* board, struct player* player, struct player* opp
 			opponent_token_around++;
 	}
 
-	if(cell_is_present(board, y - 1, x - 1))
+	if(cell_is_in(board, y - 1, x - 1))
 	{
 		if(board->grid[y - 1][x - 1].token == player)
 			player_token_around++;
@@ -421,35 +418,35 @@ void check_border(struct board* board, struct player* player, struct player* opp
 void check_borders_around(struct board* board, struct player* player, struct player* opponent,
 							  uint8_t y, uint8_t x)
 {
-	if(cell_is_present(board, y - 1, x) && board->grid[y - 1][x].is_border &&
+	if(cell_is_in(board, y - 1, x) && board->grid[y - 1][x].is_border &&
 	   board->grid[y - 1][x].token == NULL) 
 		check_border(board, player, opponent, y - 1, x);
 
-	if(cell_is_present(board, y - 1, x + 1) && board->grid[y - 1][x + 1].is_border &&
+	if(cell_is_in(board, y - 1, x + 1) && board->grid[y - 1][x + 1].is_border &&
 	   board->grid[y - 1][x + 1].token == NULL) 
 		check_border(board, player, opponent, y - 1, x + 1);
 
-	if(cell_is_present(board, y, x + 1) && board->grid[y][x + 1].is_border &&
+	if(cell_is_in(board, y, x + 1) && board->grid[y][x + 1].is_border &&
 	   board->grid[y][x + 1].token == NULL) 
 		check_border(board, player, opponent, y, x + 1);
 
-	if(cell_is_present(board, y + 1, x + 1) && board->grid[y + 1][x + 1].is_border &&
+	if(cell_is_in(board, y + 1, x + 1) && board->grid[y + 1][x + 1].is_border &&
 	   board->grid[y + 1][x + 1].token == NULL) 
 		check_border(board, player, opponent, y + 1, x + 1);
 
-	if(cell_is_present(board, y + 1, x) && board->grid[y + 1][x].is_border &&
+	if(cell_is_in(board, y + 1, x) && board->grid[y + 1][x].is_border &&
 	   board->grid[y + 1][x].token == NULL) 
 		check_border(board, player, opponent, y + 1, x);
 
-	if(cell_is_present(board, y + 1, x - 1) && board->grid[y + 1][x - 1].is_border &&
+	if(cell_is_in(board, y + 1, x - 1) && board->grid[y + 1][x - 1].is_border &&
 	   board->grid[y + 1][x - 1].token == NULL) 
 		check_border(board, player, opponent, y + 1, x - 1);
 
-	if(cell_is_present(board, y, x - 1) && board->grid[y][x - 1].is_border &&
+	if(cell_is_in(board, y, x - 1) && board->grid[y][x - 1].is_border &&
 	   board->grid[y][x - 1].token == NULL) 
 		check_border(board, player, opponent, y, x - 1);
 
-	if(cell_is_present(board, y - 1, x - 1) && board->grid[y - 1][x - 1].is_border &&
+	if(cell_is_in(board, y - 1, x - 1) && board->grid[y - 1][x - 1].is_border &&
 	   board->grid[y - 1][x - 1].token == NULL) 
 		check_border(board, player, opponent, y - 1, x - 1);
 }
@@ -483,10 +480,11 @@ void check_borders_from_to(struct board* board, struct player* player, struct pl
 void play_move(struct board* board, struct player* player, struct player* opponent,
 			   uint8_t y, uint8_t x)
 {
-	struct coord left = {.y = y, .x = board->row_info[y].limit_left};
-	struct coord right = {.y = y, .x = board->row_info[y].limit_right};
+	struct coord left = {.y = y, .x = board->length - 1};
+	struct coord right = {.y = y, .x = 0};
 	struct coord top = {.y = 0, .x = x};
-	struct coord bottom = {.y  = board->nb_rows - 1, .x = x};
+	struct coord bottom = {.y  = board->height - 1, .x = x};
+
 	struct coord top_left = {.y = 0, .x = board->row_info[0].limit_left};
 	struct coord bottom_right = {.y = board->nb_rows - 1, .x = board->row_info[board->nb_rows - 1].limit_right};
 	struct coord top_right = {.y = 0, .x = board->row_info[0].limit_right};

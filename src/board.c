@@ -79,7 +79,7 @@ void print_board(struct board* board)
 			printf("----");
 	}
 
-	for(y = 0; y < board->nb_rows; y++)
+	for(y = 0; y < board->height; y++)
 	{
 		printf("\n");
 		printf("\t");
