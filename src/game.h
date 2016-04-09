@@ -8,13 +8,13 @@
 
 struct game
 {
-	struct player players[2];
+	struct player* players[2];
 	struct board* board;
 	uint8_t points_to_win;
 	uint16_t turn_time;
 };
 
-void init_game(struct game* game, struct player players[2],
+void init_game(struct game* game, struct player* players[2],
 			   struct board* board, uint8_t points_to_win, uint16_t turn_time);
 
 void launch_game(struct game* game);

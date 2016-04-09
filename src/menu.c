@@ -40,37 +40,33 @@ void main_menu()
 
 void pvp_menu()
 {
-	struct player players[2];
+	struct player* players[2];
 	struct board board;
 	struct game game;
 
-	init_player(&players[0], "player1", 0, FG_BLUE);
-	init_player(&players[1], "player2", 0, FG_RED);
+	init_player(players[0], "player1", 0, FG_BLUE);
+	init_player(players[1], "player2", 0, FG_RED);
 
 	init_board(&board, &Board_5x5);
 
 	init_game(&game, players, &board, 5, 15);
+
 	launch_game(&game);
 }
 
 void pve_menu()
 {
-	struct player* players = malloc(sizeof(*players) * 2);
+	struct player* players[2];
 
-	uint16_t turn_time;
-	uint8_t points_to_win;
 	struct board board;
 	struct game game;
 
-	init_player(&players[0], &players[1], player_name_request(-1, NULL), 0, FG_BLUE);
-	init_player(&players[1], &players[0], "AI", 1, FG_RED);
-
-	turn_time = time_request();
-	points_to_win = points_request();
+	init_player(players[0], player_name_request(-1, NULL), 0, FG_BLUE);
+	init_player(players[1], "AI", 1, FG_RED);
 
 	init_board(&board, board_request());
 
-	init_game(&game, players, &board, points_to_win, turn_time);
+	init_game(&game, players, &board, 5, 15);
 
 	launch_game(&game);
 }
@@ -85,7 +81,7 @@ void print_boards()
 	}
 }
 
-uint8_t is_name_taken(char* name, int8_t player_number, struct player players[])
+uint8_t is_name_taken(char* name, int8_t player_number, struct player players[2])
 {
 	uint8_t i;
 
@@ -97,7 +93,7 @@ uint8_t is_name_taken(char* name, int8_t player_number, struct player players[])
 	return 0;
 }
 
-char* player_name_request(int8_t player_number, struct player players[])
+char* player_name_request(int8_t player_number, struct player players[2])
 {
 	char* name;
 
@@ -127,7 +123,7 @@ char* player_name_request(int8_t player_number, struct player players[])
 	}
 }
 
-uint8_t is_color_taken(color color, int8_t player_number, struct player players[])
+uint8_t is_color_taken(color color, int8_t player_number, struct player players[2])
 {
 	uint8_t i;
 
@@ -139,7 +135,7 @@ uint8_t is_color_taken(color color, int8_t player_number, struct player players[
 	return 0;
 }
 
-color color_request(int8_t player_number, struct player players[])
+color color_request(int8_t player_number, struct player players[2])
 {
 	char* input;
 	int color;
