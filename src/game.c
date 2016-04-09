@@ -6,7 +6,7 @@
 #include "game.h"
 #include "util.h"
 
-void init_game(struct game* game, struct player* players,
+void init_game(struct game* game, struct player players[2],
 			   struct board* board, uint8_t points_to_win, uint16_t turn_time)
 {
 	game->players = players;
@@ -19,26 +19,25 @@ void launch_game(struct game* game)
 {
 	srand(time(NULL));
 
-	struct player* current_player = game->players;
+	uint8_t i, j;
 	struct coord coord;
 
-	if(rand() % 2)
-		current_player = current_player->opponent;
+	i = rand() % 2;
 
-	printf("%s play first.\n", current_player->name);
+	printf("%s play first.\n", game->players[i].name);
 
 	do
 	{
+		j = i == 0 ? 1 : 0;
+
 		print_board(game->board);
-		coord = move_request(game->board, current_player);
+		coord = move_request(game->board, game->players[i]);
+		play_move(game->board, game->players[i], game->players[j], coord.y, coord.x);
 
-		printf("After coord request: %d, %d\n", coord.y, coord.x);
-
-		play_move(game->board, current_player, current_player->opponent, coord.y, coord.x);
-		current_player = current_player->opponent;
+		i == j;
 	}while(get_winner(game) == NULL);
 
-	printf("The winner of the game is %s.\n", current_player->opponent->name);
+	printf("The winner of the game is %s.\n", game->players[j]);
 }
 
 struct coord string_to_coord(char* string)
@@ -65,29 +64,20 @@ struct coord string_to_coord(char* string)
 	return coord;
 }
 
-uint8_t player_is_in_array(struct player* player, struct player* players[])
-{
-	uint8_t i;
-
-	for(i = 0; i < 2; i++)
-	{
-		if(player == players[i])
-			return 1;
-	}
-
-	return 0;
-}
-
 uint8_t cell_is_in(struct board* board, uint8_t y, uint8_t x)
 {
-	return y < board->height && x < board->length;
+
+	printf("In cell_is_in.\n");
+
+	return y <= board->height && x <= board->length;
 }
 
 uint8_t cell_is_playable_for(struct player* player, struct board* board, uint8_t y, uint8_t x)
 { 
 	if(!cell_is_in(board, y, x) ||
 	   board->grid[y][x].is_hole|| board->grid[y][x].token != NULL ||
-	   player_is_in_array(player, board->grid[y][x].check_against))
+	   player_is_in(player, board->grid[y][x].border_check_against, 2) ||
+	   player_is_in(player, board->grid[y][x].align_check_against, 2))
 		return 0;
 	return 1;
 }
@@ -127,14 +117,17 @@ void eliminate_from_to(struct cell** grid, struct player* player, struct player*
 	int8_t x_mover = 0;
 	struct coord chain_pos;
 
-	if(start.x > end.x)
-		y_mover = -1;
-	else if(start.x < end.x)
+	if(start.y < end.y)
 		y_mover = 1;
-	if(start.y > end.y)
+	if(start.x > end.x)
 		x_mover = -1;
-	else if(start.y < end.y)
+	else if(start.x < end.x)
 		x_mover = 1;
+
+	printf("In eliminate_from_to.\n");
+
+	printf("y_mover = %d.\n", y_mover);
+	printf("x_mover = %d.\n", x_mover);
 
 	while(start.y != end.y || start.x != end.x)
 	{
@@ -191,6 +184,8 @@ void eliminate_from_to(struct cell** grid, struct player* player, struct player*
 void eliminate_border(struct board* board, struct player* player,
 					  uint8_t y, uint8_t x)
 {
+	printf("In eliminate_border.\n");
+
 	uint8_t opponent_token_around = 0;
 
 	if(cell_is_in(board, y - 1, x) && board->grid[y - 1][x].token == player)
@@ -227,6 +222,8 @@ void eliminate_border(struct board* board, struct player* player,
 void eliminate_borders_around(struct board* board, struct player* player, struct player* opponent,
 							  uint8_t y, uint8_t x)
 {
+	printf("In eliminate_borders_around.\n");
+
 	if(cell_is_in(board, y - 1, x) && board->grid[y - 1][x].is_border &&
 	   board->grid[y - 1][x].token == opponent) 
 		eliminate_border(board, player, y - 1, x);
@@ -260,21 +257,22 @@ void eliminate_borders_around(struct board* board, struct player* player, struct
 		eliminate_border(board, player, y - 1, x - 1);
 }
 
-void check_from_to(struct cell** grid, struct coord start, struct coord end)
+void check_from_to(struct board* board, struct player* player, struct player* opponent,
+				   struct coord start, struct coord end)
 {
+	printf("In check_from_to.\n");
+
 	uint8_t i;
 	int8_t y_mover = 0;
 	int8_t x_mover = 0;
-	struct player* strangleholds[2];
+	struct player strangleholds[2];
 	struct coord cell_pos;
 
-	if(start.x > end.x)
-		y_mover = -1;
-	else if(start.x < end.x)
+	if(start.y < end.y)
 		y_mover = 1;
-	if(start.y > end.y)
+	if(start.x > end.x)
 		x_mover = -1;
-	else if(start.y < end.y)
+	else if(start.x < end.x)
 		x_mover = 1;
 
 	while(start.y != end.y || start.x != end.x)
@@ -282,8 +280,12 @@ void check_from_to(struct cell** grid, struct coord start, struct coord end)
 		strangleholds[0] = NULL;
 		strangleholds[1] = NULL;
 
-		while(grid[start.y][start.x].token == NULL)
+		while(board->grid[start.y][start.x].token == NULL)
 		{
+			if(board->grid[start.y][start.x].is_border)
+				check_border(board, player, opponent, start.y, start.x);
+			check_borders_around(board, player, opponent, start.y, start.x);
+
 			start.y += y_mover;
 			start.x += x_mover;
 
@@ -291,13 +293,11 @@ void check_from_to(struct cell** grid, struct coord start, struct coord end)
 				return;
 		}
 
-		for(i = 0; grid[start.y][start.x].token != NULL;)
+		while(board->grid[start.y][start.x].token != NULL)
 		{
-			if(!player_is_in_array(grid[start.y][start.x].token, strangleholds))
-			{
-				strangleholds[i] = grid[start.y][start.x].token;
-				i++;
-			}
+			add_player_unique(board->grid[start.y][start.x].token, strangleholds, 2);
+
+			check_borders_around(board, player, opponent, start.y, start.x);
 
 			start.y += y_mover;
 			start.x += x_mover;
@@ -305,25 +305,23 @@ void check_from_to(struct cell** grid, struct coord start, struct coord end)
 			if(start.y == end.y && start.x == end.x)
 				return;
 		}
+
+		if(board->grid[start.y][start.x].is_border)
+			check_border(board, player, opponent, start.y, start.x);
+		check_borders_around(board, player, opponent, start.y, start.x);
 
 		cell_pos = start;
-		grid[cell_pos.y][cell_pos.x].check_against[0] = NULL;
-		grid[cell_pos.y][cell_pos.x].check_against[1] = NULL;
 
 		start.y += y_mover;
 		start.x += x_mover;
 
-		for(i = 0; grid[start.y][start.x].token != NULL;)
+		while(board->grid[start.y][start.x].token != NULL)
 		{
-			if(player_is_in_array(grid[start.y][start.x].token, strangleholds))
-			{
-				if(!player_is_in_array(grid[start.y][start.x].token, grid[cell_pos.y][cell_pos.x].check_against))
-				{
-					grid[cell_pos.y][cell_pos.x].check_against[i] = grid[start.y][start.x].token->opponent;
-					i++;
-				}
-			}
+			if(player_is_in(board->grid[start.y][start.x].token, strangleholds, 2))
+				add_player_unique(board->grid[start.y][start.x].token->opponent,
+								  board->grid[cell_pos.y][cell_pos.x].align_check_against.player, 2);
 
+			check_borders_around(board, player, opponent, start.y, start.x);
 			start.y += y_mover;
 			start.x += x_mover;
 			
@@ -338,25 +336,24 @@ void check_from_to(struct cell** grid, struct coord start, struct coord end)
 void check_border(struct board* board, struct player* player, struct player* opponent,
 				  uint8_t y, uint8_t x)
 {
+	printf("In check_border.\n");
+
 	uint8_t player_token_around = 0;
 	uint8_t opponent_token_around = 0;
-
-	board->grid[y][x].check_against[0] = NULL;
-	board->grid[y][x].check_against[1] = NULL;
 
 	if(cell_is_in(board, y - 1, x))
 	{
 		if(board->grid[y - 1][x].token == player)
 			player_token_around++;
-		if(board->grid[y - 1][x].token == opponent)
-			opponent_token_around++;
+		else if(board->grid[y - 1][x].token == opponent)
+			player_token_around++;
 	}
 
 	if(cell_is_in(board, y - 1, x + 1))
 	{
 		if(board->grid[y - 1][x + 1].token == player)
 			player_token_around++;
-		if(board->grid[y - 1][x + 1].token == opponent)
+		else if(board->grid[y - 1][x + 1].token == opponent)
 			opponent_token_around++;
 	}
 
@@ -364,7 +361,7 @@ void check_border(struct board* board, struct player* player, struct player* opp
 	{
 		if(board->grid[y][x + 1].token == player)
 			player_token_around++;
-		if(board->grid[y][x + 1].token == opponent)
+		else if(board->grid[y][x + 1].token == opponent)
 			opponent_token_around++;
 	}
 
@@ -372,7 +369,7 @@ void check_border(struct board* board, struct player* player, struct player* opp
 	{
 		if(board->grid[y + 1][x + 1].token == player)
 			player_token_around++;
-		if(board->grid[y + 1][x + 1].token == opponent)
+		else if(board->grid[y + 1][x + 1].token == opponent)
 			opponent_token_around++;
 	}
 
@@ -380,7 +377,7 @@ void check_border(struct board* board, struct player* player, struct player* opp
 	{
 		if(board->grid[y + 1][x].token == player)
 			player_token_around++;
-		if(board->grid[y + 1][x].token == opponent)
+		else if(board->grid[y + 1][x].token == opponent)
 			opponent_token_around++;
 	}
 
@@ -388,7 +385,7 @@ void check_border(struct board* board, struct player* player, struct player* opp
 	{
 		if(board->grid[y + 1][x - 1].token == player)
 			player_token_around++;
-		if(board->grid[y + 1][x - 1].token == opponent)
+		else if(board->grid[y + 1][x - 1].token == opponent)
 			opponent_token_around++;
 	}
 
@@ -396,7 +393,7 @@ void check_border(struct board* board, struct player* player, struct player* opp
 	{
 		if(board->grid[y][x - 1].token == player)
 			player_token_around++;
-		if(board->grid[y][x - 1].token == opponent)
+		else if(board->grid[y][x - 1].token == opponent)
 			opponent_token_around++;
 	}
 
@@ -404,20 +401,21 @@ void check_border(struct board* board, struct player* player, struct player* opp
 	{
 		if(board->grid[y - 1][x - 1].token == player)
 			player_token_around++;
-		if(board->grid[y - 1][x - 1].token == opponent)
+		else if(board->grid[y - 1][x - 1].token == opponent)
 			opponent_token_around++;
 	}
 
 	if(player_token_around >= 3)
-		board->grid[y][x].check_against[0] = player;
-
+		add_player_unique(opponent, board->grid[y][x].border_check_against);
 	if(opponent_token_around >= 3)
-		board->grid[y][x].check_against[1] = opponent;
+		add_player_unique(player, board->grid[y][x].border_check_against);
 }
 
 void check_borders_around(struct board* board, struct player* player, struct player* opponent,
-							  uint8_t y, uint8_t x)
+						  uint8_t y, uint8_t x)
 {
+	printf("In check_border_around.\n");
+
 	if(cell_is_in(board, y - 1, x) && board->grid[y - 1][x].is_border &&
 	   board->grid[y - 1][x].token == NULL) 
 		check_border(board, player, opponent, y - 1, x);
@@ -451,44 +449,22 @@ void check_borders_around(struct board* board, struct player* player, struct pla
 		check_border(board, player, opponent, y - 1, x - 1);
 }
 
-void check_borders_from_to(struct board* board, struct player* player, struct player* opponent,
-						   struct coord start, struct coord end)
-{
-	int8_t y_mover = 0;
-	int8_t x_mover = 0;
-
-	if(start.x > end.x)
-		y_mover = -1;
-	else if(start.x < end.x)
-		y_mover = 1;
-	if(start.y > end.y)
-		x_mover = -1;
-	else if(start.y < end.y)
-		x_mover = 1;
-
-	while(start.y != end.y || start.x != end.x)
-	{
-		if(board->grid[start.y][start.x].is_border && board->grid[start.y][start.x].token == NULL)
-			check_border(board, player, opponent, start.y, start.x);
-		check_borders_around(board, player, opponent, start.y, start.x);
-
-		start.y += y_mover;
-		start.x += x_mover;
-	}
-}
-
 void play_move(struct board* board, struct player* player, struct player* opponent,
 			   uint8_t y, uint8_t x)
 {
-	struct coord left = {.y = y, .x = board->length - 1};
-	struct coord right = {.y = y, .x = 0};
+	struct coord left = {.y = y, .x = 0};
+	struct coord right = {.y = y, .x = board->length};
 	struct coord top = {.y = 0, .x = x};
-	struct coord bottom = {.y  = board->height - 1, .x = x};
+	struct coord bottom = {.y  = board->height, .x = x};
 
-	struct coord top_left = {.y = 0, .x = board->row_info[0].limit_left};
-	struct coord bottom_right = {.y = board->nb_rows - 1, .x = board->row_info[board->nb_rows - 1].limit_right};
-	struct coord top_right = {.y = 0, .x = board->row_info[0].limit_right};
-	struct coord bottom_left = {.y = board->nb_rows - 1, .x = board->row_info[board->nb_rows - 1].limit_left};
+	uint8_t min = x < y ? x : y;
+	uint8_t sum = x + y;
+
+	struct coord top_left = {.y = y - min, .x = x - min};
+	struct coord bottom_right = {.y = board->height - top_left.x, .x = board->length - top_left.y};
+	struct coord top_right = {.y = sum > board->height ? sum - board->height : 0,
+							  .x = sum > board->length ? board->length : sum};
+	struct coord bottom_left = {.y = top_right.x, .x = top_right.y};
 	
 	printf("After coords init in play_move\n");
 
@@ -503,6 +479,8 @@ void play_move(struct board* board, struct player* player, struct player* oppone
 
 	board->grid[y][x].token = player;
 
+	printf("Token played = %s\n", board->grid[y][x].token->name);
+
 	eliminate_from_to(board->grid, player, opponent, left, right);
 	eliminate_from_to(board->grid, player, opponent, top, bottom);
 	eliminate_from_to(board->grid, player, opponent, top_left, bottom_right);
@@ -510,25 +488,19 @@ void play_move(struct board* board, struct player* player, struct player* oppone
 
 	eliminate_borders_around(board, player, opponent, y, x);
 
-	check_from_to(board->grid, left, right);
-	check_from_to(board->grid, top, bottom);
-	check_from_to(board->grid, top_left, bottom_right);
-	check_from_to(board->grid, top_right, bottom_left);
-
-	check_borders_from_to(board, player, opponent, left, right);
-	check_borders_from_to(board, player, opponent, top, bottom);
-	check_borders_from_to(board, player, opponent, top_left, bottom_right);
-	check_borders_from_to(board, player, opponent, top_right, bottom_left);
+	check_from_to(board, player, opponent,left, right);
+	check_from_to(board, player, opponent,top, bottom);
+	check_from_to(board, player, opponent,top_left, bottom_right);
+	check_from_to(board, player, opponent,top_right, bottom_left);
 }
 
 struct player* get_winner(struct game* game)
 {
 	uint8_t i;
-
 	for(i = 0; i < 2; i++)
 	{
-		if(game->players[i].points >= game->points_to_win)
-			return &game->players[i];
+		if(game->players[i]->points >= game->points_to_win)
+			return game->players[i];
 	}
 	// Check if the board is playable
 		// if the board board is not playable

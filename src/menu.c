@@ -40,33 +40,12 @@ void main_menu()
 
 void pvp_menu()
 {
-//	struct player* players = malloc(sizeof(*players) * 2);
-//
-//	uint16_t turn_time;
-//	uint8_t points_to_win;
-//	struct board board;
-//	struct game game;
-
-//	init_player(&players[0], &players[1],
-//				player_name_request(0, players), 0, color_request(0, players));
-//	init_player(&players[1], &players[0],
-//				player_name_request(1, players), 0, color_request(1, players));
-
-//	turn_time = time_request();
-//	points_to_win = points_request();
-
-//  init_board(&board, board_request());
-
-//	init_game(&game, players, &board, points_to_win, turn_time);
-
-//	launch_game(&game);
-
-	struct player* players = malloc(sizeof(*players) * 2);
+	struct player players[2];
 	struct board board;
 	struct game game;
 
-	init_player(&players[0], &players[1], "player1", 0, FG_BLUE);
-	init_player(&players[1], &players[0], "player2", 0, FG_RED);
+	init_player(&players[0], "player1", 0, FG_BLUE);
+	init_player(&players[1], "player2", 0, FG_RED);
 
 	init_board(&board, &Board_5x5);
 

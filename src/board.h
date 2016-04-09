@@ -14,7 +14,8 @@ struct cell
 {
 	uint8_t is_hole;
 	uint8_t is_border;
-	struct player* check_against[2];
+	struct player border_check_against[2];
+	struct player align_check_against[2];
 	struct player* token;
 };
 

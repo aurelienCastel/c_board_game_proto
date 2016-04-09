@@ -8,8 +8,8 @@
 
 uint8_t is_border(struct board* board, uint8_t y, uint8_t x)
 {
-	if(y == 0 || y == board->height - 1 ||
-	   x == 0 || x == board->length - 1 || 
+	if(y == 0 || y == board->height ||
+	   x == 0 || x == board->length || 
 	   board->grid[y - 1][x].is_hole || board->grid[y][x - 1].is_hole ||
 	   board->grid[y + 1][x].is_hole || board->grid[y][x + 1].is_hole) 
 		return 1;
@@ -22,20 +22,22 @@ void init_board(struct board* board, struct board_model* model)
 
 	board->name = string_copy(model->name, string_length(model->name));
 
-	board->height = model->nb_rows;
-	board->length = longest_string(model->model, model->nb_rows);
+	board->height = model->nb_rows - 1;
+	board->length = longest_string(model->model, model->nb_rows) - 1;
 
-	board->grid = malloc(board->height * sizeof *(board->grid));
+	board->grid = malloc((board->height + 1) * sizeof *(board->grid));
 
-	for(y = 0; y < board->height; y++)
+	for(y = 0; y <= board->height; y++)
 	{
-		board->grid[y] = malloc(board->length * sizeof **(board->grid));
+		board->grid[y] = malloc((board->length + 1) * sizeof **(board->grid));
 
 		for(x = 0; model->model[y][x] != '\0'; x++)
 		{
 			board->grid[y][x].token = NULL;
-			board->grid[y][x].check_against[0] = NULL;
-			board->grid[y][x].check_against[1] = NULL;
+			board->grid[y][x].border_check_against[0] = NULL;
+			board->grid[y][x].border_check_against[1] = NULL;
+			board->grid[y][x].align_check_against[0] = NULL;
+			board->grid[y][x].align_check_against[1] = NULL;
 
 			if(model->model[y][x] == '*')
 				board->grid[y][x].is_hole = 0;
@@ -44,9 +46,9 @@ void init_board(struct board* board, struct board_model* model)
 		}
 	}
 
-	for(y = 0; y < board->height; y++)
+	for(y = 0; y <= board->height; y++)
 	{
-		for(x = 0; x < board->length; x++)
+		for(x = 0; x <= board->length; x++)
 		{
 			if(!board->grid[y][x].is_hole)
 				board->grid[y][x].is_border = is_border(board, y, x);
@@ -59,7 +61,7 @@ void delete_board(struct board board)
 	uint8_t y;
 
 	free(board.name);
-	for(y = 0; y < board.height; y++)
+	for(y = 0; y <= board.height; y++)
 		free(board.grid[y]);
 	free(board.grid);
 }
@@ -67,11 +69,10 @@ void delete_board(struct board board)
 void print_board(struct board* board)
 {
 	uint8_t y, x;
-	uint8_t left, right;
 
 	printf("\n");
 	printf("\t");
-	for(x = 0; x < board->length; x++)
+	for(x = 0; x <= board->length; x++)
 	{
 		if(board->grid[0][x].is_hole)
 			printf("    ");
@@ -79,16 +80,16 @@ void print_board(struct board* board)
 			printf("----");
 	}
 
-	for(y = 0; y < board->height; y++)
+	for(y = 0; y <= board->height; y++)
 	{
 		printf("\n");
 		printf("\t");
-		for(x = 0; x < board->length; x++)
+		for(x = 0; x <= board->length; x++)
 		{
 			if(board->grid[y][x].is_hole)
 			{
 				printf("   ");
-				if(x < board->length - 1 && board->grid[y][x + 1].is_hole)
+				if(x < board->length && board->grid[y][x + 1].is_hole)
 					printf(" ");
 			}
 			else
@@ -98,16 +99,17 @@ void print_board(struct board* board)
 					cc_fprintf(BG_DARK_YELLOW, stdout, "   ");
 				else
 					cc_fprintf(board->grid[y][x].token->color, stdout, " O ");
-				printf("|");
+				if(x == board->length || board->grid[y][x + 1].is_hole)
+					printf("|");
 			}
 		}
 
 		printf("\n");
 		printf("\t");
-		for(x = 0; x < board->length; x++)
+		for(x = 0; x <= board->length; x++)
 		{
 			if(board->grid[y][x].is_hole &&
-			   (y == board->height - 1 || board->grid[y + 1][x].is_hole))
+			   (y == board->height || board->grid[y + 1][x].is_hole))
 				printf("    ");
 			else
 				printf("----");
