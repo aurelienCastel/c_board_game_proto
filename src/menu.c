@@ -40,16 +40,22 @@ void main_menu()
 
 void pvp_menu()
 {
+	struct player player1;
+	struct player player2;
 	struct player* players[2];
 	struct board board;
 	struct game game;
 
-	init_player(players[0], "player1", 0, FG_BLUE);
-	init_player(players[1], "player2", 0, FG_RED);
+	init_player(&player1, &player2, "player1", 0, FG_BLUE);
+	init_player(&player2, &player1, "player2", 0, FG_RED);
+	players[0] = &player1;
+	players[1] = &player2;
 
 	init_board(&board, &Board_5x5);
 
 	init_game(&game, players, &board, 5, 15);
+
+	printf("oui\n");
 
 	launch_game(&game);
 }
@@ -61,8 +67,8 @@ void pve_menu()
 	struct board board;
 	struct game game;
 
-	init_player(players[0], player_name_request(-1, NULL), 0, FG_BLUE);
-	init_player(players[1], "AI", 1, FG_RED);
+	init_player(players[0], players[1], player_name_request(-1, NULL), 0, FG_BLUE);
+	init_player(players[1], players[0], "AI", 1, FG_RED);
 
 	init_board(&board, board_request());
 

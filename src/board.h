@@ -10,6 +10,18 @@ struct coord
 	uint8_t y;
 };
 
+struct card_points
+{
+	struct coord top;
+	struct coord bottom;
+	struct coord left;
+	struct coord right;
+	struct coord top_left;
+	struct coord bottom_right;
+	struct coord top_right;
+	struct coord bottom_left;
+};
+
 struct cell
 {
 	uint8_t is_hole;
