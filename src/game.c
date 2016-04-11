@@ -71,12 +71,10 @@ uint8_t cell_is_in(struct board* board, uint8_t y, uint8_t x)
 
 uint8_t cell_is_playable_for(struct player* player, struct board* board, uint8_t y, uint8_t x)
 { 
-	if(!cell_is_in(board, y, x) ||
-	   board->grid[y][x].is_hole || board->grid[y][x].token != NULL ||
-	   player_is_in(player, board->grid[y][x].border_check_against, 2) ||
-	   player_is_in(player, board->grid[y][x].align_check_against, 2))
-		return 0;
-	return 1;
+	return cell_is_in(board, y, x) &&
+		   !board->grid[y][x].is_hole && board->grid[y][x].token == NULL &&
+		   !player_is_in(player, board->grid[y][x].border_check_against, 2) &&
+		   !player_is_in(player, board->grid[y][x].align_check_against, 2);
 }
 
 struct coord move_request(struct board* board, struct player* player)
@@ -401,7 +399,6 @@ void check_from_to(struct board* board, struct player* player, struct player* op
 				return;
 			start.y += y_mover;
 			start.x += x_mover;
-			
 		}
 
 		start = cell_pos;
@@ -424,7 +421,7 @@ void check_border(struct board* board, struct player* player, struct player* opp
 		if(board->grid[y - 1][x].token == player)
 			player_token_around++;
 		else if(board->grid[y - 1][x].token == opponent)
-			player_token_around++;
+			opponent_token_around++;
 	}
 
 	if(cell_is_in(board, y - 1, x + 1))

@@ -30,18 +30,23 @@ void uncheck_from_to(struct board* board, struct coord start, struct coord end);
 
 void eliminate_from_to(struct board* board, struct player* player, struct player* opponent,
 					   struct coord start, struct coord end);
+
 void eliminate_border(struct board* board, struct player* player, uint8_t y, uint8_t x);
 void eliminate_borders_around(struct board* board, struct player* player, struct player* opponent,
 							  uint8_t y, uint8_t x);
 
 void check_border(struct board* board, struct player* player, struct player* opponent,
 				  uint8_t y, uint8_t x);
+
 void check_borders_around(struct board* board, struct player* player, struct player* opponent,
 						  uint8_t y, uint8_t x);
+
 void check_from_to(struct board* board, struct player* player, struct player* opponent,
 				   struct coord start, struct coord end);
 
-void play_move(struct board* board, struct player* player, struct player* opponent, uint8_t y, uint8_t x);
+void play_move(struct board* board, struct player* player, struct player* opponent,
+			   uint8_t y, uint8_t x);
+
 struct player* get_winner(struct game* game);
 
 #endif

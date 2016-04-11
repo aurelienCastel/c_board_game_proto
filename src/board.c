@@ -8,12 +8,9 @@
 
 uint8_t is_border(struct board* board, uint8_t y, uint8_t x)
 {
-	if(y == 0 || y == board->height ||
-	   x == 0 || x == board->length || 
-	   board->grid[y - 1][x].is_hole || board->grid[y][x - 1].is_hole ||
-	   board->grid[y + 1][x].is_hole || board->grid[y][x + 1].is_hole) 
-		return 1;
-	return 0;
+	return y == 0 || y == board->height || x == 0 || x == board->length || 
+		   board->grid[y - 1][x].is_hole || board->grid[y][x - 1].is_hole ||
+		   board->grid[y + 1][x].is_hole || board->grid[y][x + 1].is_hole;
 }
 
 void init_board(struct board* board, struct board_model* model)
@@ -42,7 +39,10 @@ void init_board(struct board* board, struct board_model* model)
 			if(model->model[y][x] == '*')
 				board->grid[y][x].is_hole = 0;
 			else
+			{
 				board->grid[y][x].is_hole = 1;
+				board->grid[y][x].is_border = 0;
+			}
 		}
 	}
 
