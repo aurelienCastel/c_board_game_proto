@@ -51,11 +51,9 @@ void pvp_menu()
 	players[0] = &player1;
 	players[1] = &player2;
 
-	init_board(&board, &Board_5x5);
+	init_board(&board, &Board_7x7_hole_center);
 
-	init_game(&game, players, &board, 5, 15);
-
-	printf("oui\n");
+	init_game(&game, players, &board, 3, 15);
 
 	launch_game(&game);
 }

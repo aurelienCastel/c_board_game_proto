@@ -18,8 +18,6 @@ void init_player(struct player* player, struct player* opponent, char* name, uin
 void delete_player(struct player player);
 
 uint8_t player_is_in(struct player* player, struct player* players[2], uint8_t length);
-void add_player_unique(struct player* player, struct player* players[2], uint8_t length);
 void add_player(struct player* player, struct player* players[2], uint8_t length);
-void remove_player(struct player* player, struct player* players[2], uint8_t length);
 
 #endif
