@@ -71,7 +71,7 @@ void print_board(struct board* board)
 	uint8_t y, x;
 
 	printf("\n");
-	printf("\t");
+	printf("    ");
 	for(x = 0; x <= board->length; x++)
 	{
 		if(board->grid[0][x].is_hole)
@@ -83,7 +83,7 @@ void print_board(struct board* board)
 	for(y = 0; y <= board->height; y++)
 	{
 		printf("\n");
-		printf("\t");
+		printf("    ");
 		for(x = 0; x <= board->length; x++)
 		{
 			if(board->grid[y][x].is_hole)
@@ -105,7 +105,7 @@ void print_board(struct board* board)
 		}
 
 		printf("\n");
-		printf("\t");
+		printf("    ");
 		for(x = 0; x <= board->length; x++)
 		{
 			if(board->grid[y][x].is_hole &&

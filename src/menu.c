@@ -51,7 +51,7 @@ void pvp_menu()
 	players[0] = &player1;
 	players[1] = &player2;
 
-	init_board(&board, &Board_7x7_hole_center);
+	init_board(&board, &Board_big_diamond);
 
 	init_game(&game, players, &board, 3, 15);
 

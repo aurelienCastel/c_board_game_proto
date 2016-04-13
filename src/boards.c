@@ -36,17 +36,17 @@ struct board_model Board_7x7_hole_center = {.name = "7x7 hole center", .nb_rows 
 					    "*******"}};
 
 struct board_model Board_big_diamond = {.name = "big diamond", .nb_rows = 11,
-	.model = (char*[]) {"     *",
-					    "    ***",
-					    "   *****",
-					    "  *******",
-					    " *********",
+	.model = (char*[]) {"     *     ",
+					    "    ***    ",
+					    "   *****   ",
+					    "  *******  ",
+					    " ********* ",
 					    "***********",
-					    " *********",
-					    "  *******",
-					    "   *****",
-					    "    ***",
-					    "     *"}};
+					    " ********* ",
+					    "  *******  ",
+					    "   *****   ",
+					    "    ***    ",
+					    "     *     "}};
   
 struct board_model* Boards[] =
 {
