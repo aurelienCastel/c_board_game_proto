@@ -1,2 +1,1 @@
-# fun
-Just a few things in C.
+# Board game protorype in C.

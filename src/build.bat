@@ -2,7 +2,7 @@
 
 mkdir bin
 pushd bin
-cl -W4 -D_CRT_SECURE_NO_WARNINGS c:/fun/src/util.c c:/fun/src/token.c c:/fun/src/hero.c c:/fun/src/player.c c:/fun/src/board.c c:/fun/src/main.c
+cl -o main.exe -W4 -D_CRT_SECURE_NO_WARNINGS -DERROR_HANDLING c:/c_board_game_proto/src/console_color.c c:/c_board_game_proto/src/util.c  c:/c_board_game_proto/src/player.c c:/c_board_game_proto/src/board.c c:/c_board_game_proto/src/boards.c c:/c_board_game_proto/src/game.c c:/c_board_game_proto/src/menu.c c:/c_board_game_proto/src/main.c
 popd
 
 
